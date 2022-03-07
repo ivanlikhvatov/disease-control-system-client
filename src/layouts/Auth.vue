@@ -7,9 +7,9 @@
           <p style="font-size: x-large; font-weight: bold; color: slategrey">Пожалуйста авторизируйтесь</p>
         </v-card-title>
 
-        <v-card-text v-if="infoMessage">
-          <p style="font-size: small; font-weight: bold; color: brown">{{infoMessage}}</p>
-        </v-card-text>
+<!--        <v-card-text v-if="infoMessage">-->
+<!--          <p style="font-size: small; font-weight: bold; color: brown">{{infoMessage}}</p>-->
+<!--        </v-card-text>-->
 
         <v-card-text class="justify-center">
           <form action="/login" method="post">
@@ -50,7 +50,15 @@
 </template>
 
 <script>
+  // import {mapState} from "vuex";
+
   export default {
-    name: 'HomeView'
+    name: 'AuthView',
+
+    methods:{
+      showRegistrationForm(){
+        this.$router.push('/registration')
+      }
+    }
   }
 </script>
