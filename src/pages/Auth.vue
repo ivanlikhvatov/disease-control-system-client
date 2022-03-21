@@ -7,24 +7,21 @@
           <p style="font-size: x-large; font-weight: bold; color: slategrey">Пожалуйста авторизируйтесь</p>
         </v-card-title>
 
-<!--        <v-card-text v-if="infoMessage">-->
-<!--          <p style="font-size: small; font-weight: bold; color: brown">{{infoMessage}}</p>-->
-<!--        </v-card-text>-->
-
         <v-card-text class="justify-center">
-          <form action="/login" method="post">
+          <form class="login" @submit.prevent="login">
             <v-text-field
-                name="email"
-                label="E-mail"
+                v-model="studentNumber"
+                name="studentNumber"
+                label="Номер зачетки"
                 required
-
             ></v-text-field>
 
             <v-text-field
                 name="password"
                 label="Пароль"
+                v-model="password"
+                type="password"
                 required
-
             ></v-text-field>
 
             <v-btn
@@ -55,9 +52,24 @@
   export default {
     name: 'AuthView',
 
+    data(){
+      return {
+        studentNumber : "",
+        password : ""
+      }
+    },
+
     methods:{
       showRegistrationForm(){
         this.$router.push('/registration')
+      },
+
+      login: function () {
+        let studentNumber = this.studentNumber
+        let password = this.password
+        this.$store.dispatch('login', { studentNumber, password })
+            .then(() => this.$router.push('/'))
+            .catch(err => console.log(err))
       }
     }
   }
