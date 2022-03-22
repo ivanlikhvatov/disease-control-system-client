@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import Auth from "../pages/Auth.vue";
+import Login from "../pages/Login.vue";
 import store from '../store/index.js'
 import Registration from "../pages/Registration.vue";
 
@@ -17,9 +17,9 @@ const routes = [
     }
   },
   {
-    path: '/auth',
-    name: 'auth',
-    component: Auth
+    path: '/login',
+    name: 'login',
+    component: Login
   },
   {
     path: '/registration',

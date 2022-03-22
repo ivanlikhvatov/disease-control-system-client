@@ -1,3 +1,6 @@
+**Сделать**
+1) Исправить текст ошибок на русский
+
 # disease-control-system-client
 
 ## Project setup

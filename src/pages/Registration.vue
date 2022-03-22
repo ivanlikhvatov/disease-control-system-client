@@ -9,14 +9,35 @@
         <v-card-text class="justify-center">
           <form @submit.prevent="register">
             <v-text-field
-                name="name"
-                v-model="name"
-                :error-messages="nameErrors"
+                name="firstname"
+                v-model="firstname"
+                :error-messages="firstnameErrors"
                 :counter="20"
                 label="Имя"
                 required
-                @input="$v.name.$touch()"
-                @blur="$v.name.$touch()"
+                @input="$v.firstname.$touch()"
+                @blur="$v.firstname.$touch()"
+            ></v-text-field>
+
+            <v-text-field
+                name="lastname"
+                v-model="lastname"
+                :error-messages="lastnameErrors"
+                :counter="20"
+                label="Фамилия"
+                required
+                @input="$v.lastname.$touch()"
+                @blur="$v.lastname.$touch()"
+            ></v-text-field>
+
+            <v-text-field
+                name="patronymic"
+                v-model="patronymic"
+                :error-messages="patronymicErrors"
+                :counter="20"
+                label="Отчество (при наличии)"
+                @input="$v.patronymic.$touch()"
+                @blur="$v.patronymic.$touch()"
             ></v-text-field>
 
             <v-text-field
@@ -30,8 +51,19 @@
             ></v-text-field>
 
             <v-text-field
+                name="email"
+                v-model="email"
+                :error-messages="emailErrors"
+                label="E-mail"
+                required
+                @input="$v.email.$touch()"
+                @blur="$v.email.$touch()"
+            ></v-text-field>
+
+            <v-text-field
                 name="password"
                 v-model="password"
+                type="password"
                 :error-messages="passwordErrors"
                 label="Пароль"
                 required
@@ -41,6 +73,7 @@
             <v-text-field
                 name="password_confirmation"
                 v-model="password_confirmation"
+                type="password"
                 :error-messages="passwordConfirmationErrors"
                 label="Введите пароль еще раз"
                 required
@@ -50,13 +83,13 @@
 
             <v-select
                 name="gender"
-                v-model="select"
-                :items="items"
-                :error-messages="selectErrors"
+                v-model="gender"
+                :items="genderItems"
+                :error-messages="genderErrors"
                 label="Пол"
                 required
-                @change="$v.select.$touch()"
-                @blur="$v.select.$touch()"
+                @change="$v.gender.$touch()"
+                @blur="$v.gender.$touch()"
             ></v-select>
 
             <v-btn
@@ -64,8 +97,10 @@
                 color="info"
                 type="submit"
                 v-if="studentNumberErrors.length === 0
-                && selectErrors.length === 0
-                && nameErrors.length === 0
+                && genderErrors.length === 0
+                && firstnameErrors.length === 0
+                && lastnameErrors.length === 0
+                && patronymicErrors.length === 0
                 && passwordErrors.length === 0
                 && passwordConfirmationErrors.length === 0"
             >
@@ -91,7 +126,7 @@
             <v-btn
                 class="mr-4"
                 color="info"
-                @click="showAuth"
+                @click="showLogin"
             >
               Назад
             </v-btn>
@@ -105,7 +140,7 @@
 <script>
 import { mapState } from 'vuex'
 import { validationMixin } from 'vuelidate'
-import { required, maxLength } from 'vuelidate/lib/validators'
+import { required, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
   name: "RegistrationView",
@@ -113,42 +148,65 @@ export default {
   mixins: [validationMixin],
 
   validations: {
-    name: { required, maxLength: maxLength(20) },
+    firstname: { required, maxLength: maxLength(20) },
+    lastname: { required, maxLength: maxLength(20) },
+    patronymic: { maxLength: maxLength(20) },
     studentNumber: { required, maxLength: maxLength(10) },
-    select: { required },
+    email: { required, email },
+    gender: { required },
     password: { required, maxLength: maxLength(20) },
     password_confirmation: { required, maxLength: maxLength(20) }
   },
 
   data: () => ({
-    name: '',
+    firstname: '',
+    lastname: '',
+    patronymic: '',
     studentNumber: '',
+    email: '',
     password: '',
-    password_confirmation : '',
-    select: null,
-    items: [
+    password_confirmation: '',
+    gender: null,
+    genderItems: [
       'муж',
       'жен',
-    ],
-    checkbox: false,
-    rules: [
-      value => !value || value.size < 10000000 || 'Avatar size should be less than 10 MB!',
-    ],
+    ]
   }),
 
   computed: {
     ...mapState(['infoMessage']),
-    selectErrors () {
+    genderErrors () {
       const errors = []
-      if (!this.$v.select.$dirty) return errors
-      !this.$v.select.required && errors.push('Item is required')
+      if (!this.$v.gender.$dirty) return errors
+      !this.$v.gender.required && errors.push('Gender is required')
       return errors
     },
-    nameErrors () {
+    firstnameErrors () {
       const errors = []
-      if (!this.$v.name.$dirty) return errors
-      !this.$v.name.maxLength && errors.push('Name must be at most 20 characters long')
-      !this.$v.name.required && errors.push('Name is required.')
+      if (!this.$v.firstname.$dirty) return errors
+      !this.$v.firstname.maxLength && errors.push('Name must be at most 20 characters long')
+      !this.$v.firstname.required && errors.push('Name is required.')
+      return errors
+    },
+    lastnameErrors () {
+      const errors = []
+      if (!this.$v.lastname.$dirty) return errors
+      !this.$v.lastname.maxLength && errors.push('Name must be at most 20 characters long')
+      !this.$v.lastname.required && errors.push('Name is required.')
+      return errors
+    },
+    patronymicErrors () {
+      const errors = []
+      if (!this.$v.patronymic.$dirty) return errors
+      !this.$v.patronymic.maxLength && errors.push('Name must be at most 20 characters long')
+      return errors
+    },
+    emailErrors () {
+      const errors = []
+      if (!this.$v.email.$dirty) return errors
+      !this.$v.email.email && errors.push('Must be valid e-mail')
+      !this.$v.email.required && errors.push('E-mail is required')
+
       return errors
     },
     studentNumberErrors () {
@@ -181,23 +239,29 @@ export default {
   methods: {
     clear () {
       this.$v.$reset()
-      this.name = ''
+      this.firstname = ''
+      this.lastname = ''
+      this.patronymic = ''
+      this.studentNumber = ''
       this.email = ''
       this.password = ''
-      this.select = null
-      this.checkbox = false
+      this.password_confirmation = ''
+      this.gender = null
     },
 
-    showAuth(){
-      this.$router.push('/auth')
+    showLogin(){
+      this.$router.push('/login')
     },
 
     register: function () {
       let data = {
-        name: this.name,
+        firstname: this.firstname,
+        lastname: this.lastname,
+        patronymic: this.patronymic,
+        studentNumber: this.studentNumber,
+        gender: this.gender,
         email: this.email,
-        password: this.password,
-        is_admin: this.is_admin
+        password: this.password
       }
       this.$store.dispatch('register', data)
           .then(() => this.$router.push('/'))

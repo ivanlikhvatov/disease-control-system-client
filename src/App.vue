@@ -54,7 +54,7 @@
 
     beforeMount() {
       if (!this.isLoggedIn){
-        this.$router.replace('/auth')
+        this.$router.replace('/login')
       }
     }
   }

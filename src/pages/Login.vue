@@ -50,7 +50,7 @@
   // import {mapState} from "vuex";
 
   export default {
-    name: 'AuthView',
+    name: 'LoginView',
 
     data(){
       return {
