@@ -92,6 +92,13 @@
                 @blur="$v.gender.$touch()"
             ></v-select>
 
+            <p
+                style="color: red"
+                v-if="serverError"
+            >
+              {{serverError}}
+            </p>
+
             <v-btn
                 class="mr-4"
                 color="info"
@@ -138,7 +145,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, email } from 'vuelidate/lib/validators'
 
@@ -174,7 +180,9 @@ export default {
   }),
 
   computed: {
-    ...mapState(['infoMessage']),
+    serverError () {
+      return this.$store.getters.serverError.message
+    },
     genderErrors () {
       const errors = []
       if (!this.$v.gender.$dirty) return errors
@@ -273,7 +281,6 @@ export default {
     if (!this.isLoggedIn){
       this.$router.replace('/registration')
     }
-    this.infoMessage = null
   }
 }
 </script>

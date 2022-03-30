@@ -28,7 +28,7 @@
 <script>
   export default {
     computed : {
-      isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
+      isLoggedIn : function () { return this.$store.getters.isLoggedIn},
     },
 
     methods: {
@@ -50,6 +50,18 @@
           throw err;
         });
       });
+    },
+
+    beforeCreate: function () {
+      this.$store.dispatch("clearServerError")
+    },
+
+    beforeUpdate: function () {
+      this.$store.dispatch("clearServerError")
+    },
+
+    destroyed: function () {
+      this.$store.dispatch("clearServerError")
     },
 
     beforeMount() {

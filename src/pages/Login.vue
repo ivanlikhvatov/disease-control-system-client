@@ -24,6 +24,13 @@
                 required
             ></v-text-field>
 
+            <p
+                style="color: red"
+                v-if="serverError"
+            >
+              {{serverError}}
+            </p>
+
             <v-btn
                 color="info"
                 class="mr-4"
@@ -47,8 +54,6 @@
 </template>
 
 <script>
-  // import {mapState} from "vuex";
-
   export default {
     name: 'LoginView',
 
@@ -56,6 +61,12 @@
       return {
         studentNumber : "",
         password : ""
+      }
+    },
+
+    computed: {
+      serverError () {
+        return this.$store.getters.serverError.message
       }
     },
 

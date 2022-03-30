@@ -6,16 +6,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    infoMessage: null,
     status: '',
     token: localStorage.getItem('token') || '',
-    user : {}
-
+    user : {},
+    serverError: {}
   },
 
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
+    serverError: state => state.serverError
   },
 
   mutations: {
@@ -30,10 +30,18 @@ export default new Vuex.Store({
     auth_error(state){
       state.status = 'error'
     },
+    request_failed(state, serverError){
+      state.serverError = serverError
+    },
     logout(state){
       state.status = ''
       state.token = ''
+      state.serverError = {}
+      state.user = {}
     },
+    clearServerError(state){
+      state.serverError = {}
+    }
   },
 
   actions: {
@@ -51,6 +59,8 @@ export default new Vuex.Store({
             })
             .catch(err => {
               commit('auth_error')
+              const serverError = err.response.data;
+              commit('request_failed', serverError)
               localStorage.removeItem('token')
               reject(err)
             })
@@ -71,6 +81,8 @@ export default new Vuex.Store({
             })
             .catch(err => {
               commit('auth_error', err)
+              const serverError = err.response.data;
+              commit('request_failed', serverError)
               localStorage.removeItem('token')
               reject(err)
             })
@@ -85,6 +97,10 @@ export default new Vuex.Store({
         delete axios.defaults.headers.common['Authorization']
         resolve()
       })
+    },
+
+    clearServerError({commit}){
+      commit('clearServerError')
     }
   },
 
