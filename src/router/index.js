@@ -4,18 +4,11 @@ import HomeView from '../views/HomeView.vue'
 import Login from "../pages/Login.vue";
 import store from '../store/index.js'
 import Registration from "../pages/Registration.vue";
+import ActivateAccount from "../pages/ActivateAccount.vue";
 
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView,
-    meta: {
-      requiresAuth: true
-    }
-  },
   {
     path: '/login',
     name: 'login',
@@ -25,7 +18,24 @@ const routes = [
     path: '/registration',
     name: 'registration',
     component: Registration
-  }
+  },
+  {
+    // path: '/registration/activate?activationCode=7879',
+    path: '/registration/activate',
+    name: 'activate',
+    props: route => (
+        { activationCode: route.query.activationCode, userName: route.query.userName }
+    ),
+    component: ActivateAccount
+  },
+  {
+    path: '/',
+    name: 'home',
+    component: HomeView,
+    meta: {
+      requiresAuth: true
+    }
+  },
 ]
 
 const router = new VueRouter({

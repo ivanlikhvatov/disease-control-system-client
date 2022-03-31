@@ -66,6 +66,15 @@
 
     beforeMount() {
       if (!this.isLoggedIn){
+
+        // alert(this.$route.path)
+        // alert(this.$router.getMatchedComponents("activate"))
+        // alert(ActivateAccount.props.toString())
+
+        if (this.$route.query.activationCode && this.$route.path === '/registration/activate'){
+          return;
+        }
+
         this.$router.replace('/login')
       }
     }
