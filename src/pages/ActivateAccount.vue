@@ -1,40 +1,67 @@
 <template>
   <v-container>
-    <v-alert
-        v-if="!serverError"
-        outlined
-        type="success"
-        text
-    >
-      <p style="font-size: xx-large">Уважаемый {{userName}},</p>
-      <p style="font-size: x-large">Поздравляем, Вы успешно подтвердили свою почту!</p>
 
-      <v-btn
+    <div
+        v-if="!serverError.message && !serverResponse.status"
+        class="text-center mt-7"
+    >
+      <v-progress-circular
+          :size="90"
+          :width="7"
+          color="primary"
+          indeterminate
+      ></v-progress-circular>
+      <p class="mt-7" style="color:#2196F3 ">Пожалуйста подождите, идёт активация аккаунта...</p>
+    </div>
+
+    <div class="mt-14">
+      <v-alert
+          v-if="serverResponse.status && !serverError.message"
           outlined
-          color="success"
+          type="success"
+          text
       >
-        Нажмите чтобы войти
-      </v-btn>
-    </v-alert>
+        <p style="font-size: xx-large">Уважаемый {{userName}},</p>
+        <p style="font-size: x-large">Поздравляем, Вы успешно подтвердили свою почту!</p>
 
-    <v-alert
-        v-if="isWarning"
-        type="warning"
-        outlined
-        text
-    >
-      I'm a warning alert.
-      http://localhost:8081/registration/activate?activationCode=7879&userName=Ivan Ivanov Ivanich
-    </v-alert>
+        <v-btn
+            outlined
+            color="success"
+            @click="showLogin"
+        >
+          Нажмите чтобы войти
+        </v-btn>
+      </v-alert>
 
-    <v-alert
-        v-if="isError"
-        type="error"
-        outlined
-        text
-    >
-      I'm an error alert.
-    </v-alert>
+      <v-alert
+          v-if="isWarning"
+          type="warning"
+          outlined
+          text
+      >
+        <p style="font-size: xx-large">Уважаемый {{userName}},</p>
+        <p style="font-size: x-large">{{serverError.message}}</p>
+
+        <v-btn
+            v-if="serverError.errorCode === 216"
+            outlined
+            color="warning"
+            @click="resendActivationCode"
+        >
+          Нажмите чтобы получить новый код
+        </v-btn>
+      </v-alert>
+
+      <v-alert
+          v-if="isError"
+          type="error"
+          outlined
+          text
+      >
+        <p style="font-size: xx-large">Уважаемый {{userName}},</p>
+        <p style="font-size: x-large">{{serverError.message}}</p>
+      </v-alert>
+    </div>
 
   </v-container>
 </template>
@@ -45,23 +72,39 @@ export default {
   props: ['activationCode', 'userName'],
 
   computed: {
-    serverError () {
-      return this.$store.getters.serverError.message
+
+    serverResponse () {
+      return this.$store.getters.serverResponse
     },
 
-    isWarning() {
-      return false;
+    serverError () {
+      return this.$store.getters.serverError
     },
 
     isError() {
       return this.$store.getters.serverError.errorCode === 999
+    },
+
+    isWarning() {
+      return this.serverError.message && this.$store.getters.serverError.errorCode !== 999
+    },
+  },
+
+  methods: {
+    showLogin() {
+      this.$router.push('/login')
+    },
+
+    resendActivationCode() {
+      this.$store.dispatch('resendActivationCode', this.activationCode)
+          .catch(err => console.log(err))
+      this.$router.push('/login')
     }
   },
 
   beforeMount() {
-    //Логика отправки запроса на сервер
-    // alert(this.code)
-    // alert(this.$route.query.activationCode)
+    this.$store.dispatch('activateAccount', this.activationCode)
+        .catch(err => console.log(err))
   }
 }
 </script>

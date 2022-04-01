@@ -9,16 +9,21 @@ export default new Vuex.Store({
     status: '',
     token: localStorage.getItem('token') || '',
     user : {},
-    serverError: {}
+    serverError: {},
+    serverResponse: {}
   },
 
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
-    serverError: state => state.serverError
+    serverError: state => state.serverError,
+    serverResponse: state => state.serverResponse
   },
 
   mutations: {
+    activation_request(state, response){
+      state.serverResponse = response
+    },
     auth_request(state){
       state.status = 'loading'
     },
@@ -41,10 +46,47 @@ export default new Vuex.Store({
     },
     clearServerError(state){
       state.serverError = {}
+    },
+
+    clearServerResponse(state){
+      state.serverResponse = {}
     }
   },
 
   actions: {
+
+    resendActivationCode({commit}, activationCode) {
+      return new Promise((resolve, reject) => {
+        axios({url: 'http://localhost:9000/api/v1/auth/code/resend', params: {expiredActivationCode: activationCode}, method: 'POST'})
+            .then(resp => {
+              const serverResponse = resp.data.status
+              commit('activation_request', serverResponse)
+              resolve(resp)
+            })
+            .catch(err => {
+              const serverError = err.response.data;
+              commit('request_failed', serverError)
+              reject(err)
+            })
+      })
+    },
+
+    activateAccount({commit}, activationCode) {
+      return new Promise((resolve, reject) => {
+        axios({url: 'http://localhost:9000/api/v1/auth/activate', params: {activationCode: activationCode}, method: 'POST'})
+            .then(resp => {
+              const serverResponse = resp.data;
+              commit('activation_request', serverResponse)
+              resolve(resp)
+            })
+            .catch(err => {
+              const serverError = err.response.data;
+              commit('request_failed', serverError)
+              reject(err)
+            })
+      })
+    },
+
     login({commit}, user){
       return new Promise((resolve, reject) => {
         commit('auth_request')
@@ -101,6 +143,10 @@ export default new Vuex.Store({
 
     clearServerError({commit}){
       commit('clearServerError')
+    },
+
+    clearServerResponse({commit}){
+      commit('clearServerResponse')
     }
   },
 

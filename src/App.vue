@@ -54,22 +54,21 @@
 
     beforeCreate: function () {
       this.$store.dispatch("clearServerError")
+      this.$store.dispatch("clearServerResponse")
     },
 
     beforeUpdate: function () {
       this.$store.dispatch("clearServerError")
+      this.$store.dispatch("clearServerResponse")
     },
 
     destroyed: function () {
       this.$store.dispatch("clearServerError")
+      this.$store.dispatch("clearServerResponse")
     },
 
     beforeMount() {
       if (!this.isLoggedIn){
-
-        // alert(this.$route.path)
-        // alert(this.$router.getMatchedComponents("activate"))
-        // alert(ActivateAccount.props.toString())
 
         if (this.$route.query.activationCode && this.$route.path === '/registration/activate'){
           return;
