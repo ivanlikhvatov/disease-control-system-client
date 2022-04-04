@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row justify="space-around">
+    <v-row justify="space-around mt-7">
       <v-card width="450">
         <v-card-title justify="space-around">
           <p style="font-size: x-large; font-weight: bold; color: slategrey">Введите данные</p>

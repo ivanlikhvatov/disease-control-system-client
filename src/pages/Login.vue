@@ -1,5 +1,5 @@
 <template>
-  <v-container  mt-10>
+  <v-container class="mt-10">
 
     <v-row justify="space-around">
       <v-card width="400">

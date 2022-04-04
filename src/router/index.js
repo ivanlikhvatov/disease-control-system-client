@@ -5,10 +5,16 @@ import Login from "../pages/Login.vue";
 import store from '../store/index.js'
 import Registration from "../pages/Registration.vue";
 import ActivateAccount from "../pages/ActivateAccount.vue";
+import Profile from "../pages/Profile";
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile
+  },
   {
     path: '/login',
     name: 'login',
@@ -20,7 +26,6 @@ const routes = [
     component: Registration
   },
   {
-    // path: '/registration/activate?activationCode=7879',
     path: '/registration/activate',
     name: 'activate',
     props: route => (

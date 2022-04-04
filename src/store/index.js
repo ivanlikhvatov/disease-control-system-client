@@ -17,7 +17,8 @@ export default new Vuex.Store({
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     serverError: state => state.serverError,
-    serverResponse: state => state.serverResponse
+    serverResponse: state => state.serverResponse,
+    user: state => state.user
   },
 
   mutations: {
@@ -27,9 +28,9 @@ export default new Vuex.Store({
     auth_request(state){
       state.status = 'loading'
     },
-    auth_success(state, token, user){
+    auth_success(state, user){
       state.status = 'success'
-      state.token = token
+      state.token = user.token
       state.user = user
     },
     auth_error(state){
@@ -93,10 +94,10 @@ export default new Vuex.Store({
         axios({url: 'http://localhost:9000/api/v1/auth/login', data: user, method: 'POST' })
             .then(resp => {
               const token = resp.data.token
-              const user = resp.data.user
+              const user = resp.data
               localStorage.setItem('token', token)
               axios.defaults.headers.common['Authorization'] = token
-              commit('auth_success', token, user)
+              commit('auth_success', user)
               resolve(resp)
             })
             .catch(err => {
@@ -115,10 +116,10 @@ export default new Vuex.Store({
         axios({url: 'http://localhost:9000/api/v1/auth/registration', data: user, method: 'POST' })
             .then(resp => {
               const token = resp.data.token
-              const user = resp.data.user
+              const user = resp.data
               localStorage.setItem('token', token)
               axios.defaults.headers.common['Authorization'] = token
-              commit('auth_success', token, user)
+              commit('auth_success', user)
               resolve(resp)
             })
             .catch(err => {
