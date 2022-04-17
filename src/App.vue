@@ -91,7 +91,6 @@
     },
 
     created: function () {
-
       //TODO не работает
       this.$http.interceptors.response.use(undefined, function (err) {
         // eslint-disable-next-line no-unused-vars

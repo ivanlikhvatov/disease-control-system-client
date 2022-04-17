@@ -67,11 +67,7 @@ export default new Vuex.Store({
   },
 
   actions: {
-
     getUserInfo({commit}) {
-      // axios.defaults.headers.common['Authorization'] = 'Bearer_sdlkjdslkfj'
-
-      // alert(axios.defaults.headers.common['Authorization'])
       return new Promise((resolve, reject) => {
         axios({url: 'http://localhost:9000/api/v1/user/info', method: 'GET'})
             .then(resp => {
@@ -125,7 +121,7 @@ export default new Vuex.Store({
         commit('auth_request')
         axios({url: 'http://localhost:9000/api/v1/auth/login', data: user, method: 'POST' })
             .then(resp => {
-              const token = resp.data.token
+              const token = 'Bearer_' + resp.data.token
               const user = resp.data
               localStorage.setItem('token', token)
               axios.defaults.headers.common['Authorization'] = token
@@ -147,10 +143,10 @@ export default new Vuex.Store({
         commit('auth_request')
         axios({url: 'http://localhost:9000/api/v1/auth/registration', data: user, method: 'POST' })
             .then(resp => {
-              const token = resp.data.token
+              // const token = 'Bearer_' + resp.data.token
               const user = resp.data
-              localStorage.setItem('token', token)
-              axios.defaults.headers.common['Authorization'] = token
+              // localStorage.setItem('token', token)
+              // axios.defaults.headers.common['Authorization'] = token
               commit('auth_success', user)
               resolve(resp)
             })
