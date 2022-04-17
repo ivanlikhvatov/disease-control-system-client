@@ -1,6 +1,12 @@
 <template>
   <v-container class="mt-10">
     {{user}}
+
+    <v-btn
+    @click="send"
+    >
+      dsds
+    </v-btn>
   </v-container>
 </template>
 
@@ -11,6 +17,12 @@ export default {
   computed: {
     user() {
       return this.$store.getters.user
+    }
+  },
+
+  methods: {
+    send: function () {
+      this.$store.dispatch('getUserInfo');
     }
   }
 }

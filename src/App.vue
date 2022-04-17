@@ -61,6 +61,8 @@
 </style>
 
 <script>
+  // import axios from "axios";
+
   export default {
     data: () => ({
       drawer: false,
@@ -89,10 +91,12 @@
     },
 
     created: function () {
+
+      //TODO не работает
       this.$http.interceptors.response.use(undefined, function (err) {
         // eslint-disable-next-line no-unused-vars
         return new Promise(function (resolve, reject) {
-          if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+          if (err.status === 401 && err.config && !err.config._isRetryRequest) {
             this.$store.dispatch("logout")
           }
           throw err;
@@ -123,6 +127,8 @@
         }
 
         this.$router.replace('/login')
+      } else {
+        this.$store.dispatch("getUserInfo")
       }
     }
   }

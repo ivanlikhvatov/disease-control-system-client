@@ -6,10 +6,17 @@ import store from '../store/index.js'
 import Registration from "../pages/Registration.vue";
 import ActivateAccount from "../pages/ActivateAccount.vue";
 import Profile from "../pages/Profile";
+import UserCreation from "../pages/UserCreation";
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/create/user',
+    name: 'userCreation',
+    component: UserCreation,
+    beforeEnter: checkAdminPermission
+  },
   {
     path: '/profile',
     name: 'profile',
@@ -60,5 +67,14 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
+
+
+function checkAdminPermission(to, from, next) {
+  if(this.$store.getters.isAdmin) {
+    next();
+  } else {
+    next('/');
+  }
+}
 
 export default router

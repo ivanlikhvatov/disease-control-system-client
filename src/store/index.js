@@ -14,11 +14,19 @@ export default new Vuex.Store({
   },
 
   getters: {
-    isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     serverError: state => state.serverError,
     serverResponse: state => state.serverResponse,
-    user: state => state.user
+    user: state => state.user,
+
+    isLoggedIn: state => !!state.token,
+    isStudent: state => state.user.roles.indexOf("STUDENT") !== -1,
+    isAdmin: state => state.user.roles.indexOf("ADMIN") !== -1,
+    isCurator: state => state.user.roles.indexOf("CURATOR") !== -1,
+    isCuratorSupervising: state => state.user.roles.indexOf("CURATOR_SUPERVISING") !== -1,
+    isRectorat: state => state.user.roles.indexOf("RECTORAT") !== -1,
+    isDecanat: state => state.user.roles.indexOf("DECANAT") !== -1,
+    isTeacher: state => state.user.roles.indexOf("TEACHER") !== -1,
   },
 
   mutations: {
@@ -51,10 +59,34 @@ export default new Vuex.Store({
 
     clearServerResponse(state){
       state.serverResponse = {}
+    },
+
+    user_info_request(state, user) {
+      state.user = user
     }
   },
 
   actions: {
+
+    getUserInfo({commit}) {
+      // axios.defaults.headers.common['Authorization'] = 'Bearer_sdlkjdslkfj'
+
+      // alert(axios.defaults.headers.common['Authorization'])
+      return new Promise((resolve, reject) => {
+        axios({url: 'http://localhost:9000/api/v1/user/info', method: 'GET'})
+            .then(resp => {
+              const user = resp.data
+              commit('user_info_request', user)
+              resolve(resp)
+            })
+            .catch(err => {
+              const serverError = err.response.data;
+              commit('request_failed', serverError)
+              reject(err)
+            })
+      })
+
+    },
 
     resendActivationCode({commit}, activationCode) {
       return new Promise((resolve, reject) => {
@@ -133,6 +165,7 @@ export default new Vuex.Store({
     },
 
     logout({commit}){
+      //TODO послать запрос logout на сервер?
         // eslint-disable-next-line no-unused-vars
       return new Promise((resolve, reject) => {
         commit('logout')
