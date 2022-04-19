@@ -103,8 +103,7 @@ export default {
   },
 
   beforeMount() {
-    this.$store.dispatch('activateAccount', this.activationCode)
-        .catch(err => console.log(err))
+    this.$store.dispatch('activateAccount', this.activationCode);
   }
 }
 </script>

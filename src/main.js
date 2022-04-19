@@ -43,18 +43,18 @@ new Vue({
 //     }
 // );
 // // перехватчик ответа http
-// axios.interceptors.response.use(
-//     response => {
-//       return response;
-//     },
-//     error => {
-//       if (error.response) {
-//         switch (error.response.status) {
-//           case 401:
-//             // 401 Очистить информацию о токене и перейти на страницу входа
-//             this.$store.dispatch("logout");
-//         }
-//       }
-//       return Promise.reject(error.response);
-//     });
+axios.interceptors.response.use(
+    response => {
+      return response;
+    },
+    error => {
+      if (error.response) {
+        switch (error.response.status) {
+          case 401:
+            // 401 Очистить информацию о токене и перейти на страницу входа
+            this.$store.dispatch("logout");
+        }
+      }
+      return Promise.reject(error.response);
+    });
 

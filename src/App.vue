@@ -45,6 +45,16 @@
               </v-list-item-icon>
               <v-list-item-title>Профиль</v-list-item-title>
             </v-list-item>
+
+            <v-list-item
+                v-if="isAdmin"
+                @click="showUserCreationPage"
+            >
+              <v-list-item-icon>
+                <v-icon>person_add</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Добавить пользователя</v-list-item-title>
+            </v-list-item>
           </v-list-item-group>
         </v-list>
       </v-navigation-drawer>
@@ -71,6 +81,7 @@
 
     computed : {
       isLoggedIn : function () { return this.$store.getters.isLoggedIn},
+      isAdmin: function () { return this.$store.getters.isAdmin}
     },
 
     methods: {
@@ -82,6 +93,10 @@
         this.$router.push('/profile')
       },
 
+      showUserCreationPage: function () {
+        this.$router.push('/create/user')
+      },
+
       logout: function () {
         this.$store.dispatch('logout')
             .then(() => {
@@ -91,16 +106,19 @@
     },
 
     created: function () {
-      //TODO не работает
-      this.$http.interceptors.response.use(undefined, function (err) {
-        // eslint-disable-next-line no-unused-vars
-        return new Promise(function (resolve, reject) {
-          if (err.status === 401 && err.config && !err.config._isRetryRequest) {
-            this.$store.dispatch("logout")
+      this.$http.interceptors.response.use(
+          response => response,
+          error => {
+            const serverError = error.response.data;
+            this.$store.dispatch('setServerError', serverError);
+
+            if (error.response.data.errorCode === 210) {
+              this.$store.dispatch("logout").then(() => this.$router.push('/login'))
+            }
+
+            return Promise.reject(error);
           }
-          throw err;
-        });
-      });
+      )
     },
 
     beforeCreate: function () {
@@ -119,14 +137,7 @@
     },
 
     beforeMount() {
-      if (!this.isLoggedIn){
-
-        if (this.$route.query.activationCode && this.$route.path === '/registration/activate'){
-          return;
-        }
-
-        this.$router.replace('/login')
-      } else {
+      if (this.isLoggedIn) {
         this.$store.dispatch("getUserInfo")
       }
     }

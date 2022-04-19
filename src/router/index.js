@@ -15,12 +15,26 @@ const routes = [
     path: '/create/user',
     name: 'userCreation',
     component: UserCreation,
-    beforeEnter: checkAdminPermission
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkAdminPermission,
   },
   {
     path: '/profile',
     name: 'profile',
-    component: Profile
+    component: Profile,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/',
+    name: 'home',
+    component: HomeView,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/login',
@@ -40,14 +54,6 @@ const routes = [
     ),
     component: ActivateAccount
   },
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView,
-    meta: {
-      requiresAuth: true
-    }
-  },
 ]
 
 const router = new VueRouter({
@@ -57,6 +63,12 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+
+  if (!to.matched.some(record => record.meta)){
+    next('/')
+    return;
+  }
+
   if(to.matched.some(record => record.meta.requiresAuth)) {
     if (store.getters.isLoggedIn) {
       next()
@@ -70,7 +82,7 @@ router.beforeEach((to, from, next) => {
 
 
 function checkAdminPermission(to, from, next) {
-  if(this.$store.getters.isAdmin) {
+  if(store.getters.isAdmin) {
     next();
   } else {
     next('/');

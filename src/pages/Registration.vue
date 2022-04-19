@@ -8,37 +8,6 @@
 
         <v-card-text class="justify-center">
           <form @submit.prevent="register">
-            <v-text-field
-                name="firstname"
-                v-model="firstname"
-                :error-messages="firstnameErrors"
-                :counter="20"
-                label="Имя"
-                required
-                @input="$v.firstname.$touch()"
-                @blur="$v.firstname.$touch()"
-            ></v-text-field>
-
-            <v-text-field
-                name="lastname"
-                v-model="lastname"
-                :error-messages="lastnameErrors"
-                :counter="20"
-                label="Фамилия"
-                required
-                @input="$v.lastname.$touch()"
-                @blur="$v.lastname.$touch()"
-            ></v-text-field>
-
-            <v-text-field
-                name="patronymic"
-                v-model="patronymic"
-                :error-messages="patronymicErrors"
-                :counter="20"
-                label="Отчество (при наличии)"
-                @input="$v.patronymic.$touch()"
-                @blur="$v.patronymic.$touch()"
-            ></v-text-field>
 
             <v-text-field
                 name="studentNumber"
@@ -81,17 +50,6 @@
                 @blur="$v.password_confirmation.$touch()"
             ></v-text-field>
 
-            <v-select
-                name="gender"
-                v-model="gender"
-                :items="genderItems"
-                :error-messages="genderErrors"
-                label="Пол"
-                required
-                @change="$v.gender.$touch()"
-                @blur="$v.gender.$touch()"
-            ></v-select>
-
             <p
                 style="color: red"
                 v-if="serverError"
@@ -104,10 +62,7 @@
                 color="info"
                 type="submit"
                 v-if="studentNumberErrors.length === 0
-                && genderErrors.length === 0
-                && firstnameErrors.length === 0
-                && lastnameErrors.length === 0
-                && patronymicErrors.length === 0
+                && emailErrors.length === 0
                 && passwordErrors.length === 0
                 && passwordConfirmationErrors.length === 0"
             >
@@ -154,60 +109,22 @@ export default {
   mixins: [validationMixin],
 
   validations: {
-    firstname: { required, maxLength: maxLength(20) },
-    lastname: { required, maxLength: maxLength(20) },
-    patronymic: { maxLength: maxLength(20) },
     studentNumber: { required, maxLength: maxLength(10) },
     email: { required, email },
-    gender: { required },
     password: { required, maxLength: maxLength(20) },
     password_confirmation: { required, maxLength: maxLength(20) }
   },
 
   data: () => ({
-    firstname: '',
-    lastname: '',
-    patronymic: '',
     studentNumber: '',
     email: '',
     password: '',
-    password_confirmation: '',
-    gender: null,
-    genderItems: [
-      'муж',
-      'жен',
-    ]
+    password_confirmation: ''
   }),
 
   computed: {
     serverError () {
       return this.$store.getters.serverError.message
-    },
-    genderErrors () {
-      const errors = []
-      if (!this.$v.gender.$dirty) return errors
-      !this.$v.gender.required && errors.push('Gender is required')
-      return errors
-    },
-    firstnameErrors () {
-      const errors = []
-      if (!this.$v.firstname.$dirty) return errors
-      !this.$v.firstname.maxLength && errors.push('Name must be at most 20 characters long')
-      !this.$v.firstname.required && errors.push('Name is required.')
-      return errors
-    },
-    lastnameErrors () {
-      const errors = []
-      if (!this.$v.lastname.$dirty) return errors
-      !this.$v.lastname.maxLength && errors.push('Name must be at most 20 characters long')
-      !this.$v.lastname.required && errors.push('Name is required.')
-      return errors
-    },
-    patronymicErrors () {
-      const errors = []
-      if (!this.$v.patronymic.$dirty) return errors
-      !this.$v.patronymic.maxLength && errors.push('Name must be at most 20 characters long')
-      return errors
     },
     emailErrors () {
       const errors = []
@@ -247,14 +164,10 @@ export default {
   methods: {
     clear () {
       this.$v.$reset()
-      this.firstname = ''
-      this.lastname = ''
-      this.patronymic = ''
       this.studentNumber = ''
       this.email = ''
       this.password = ''
       this.password_confirmation = ''
-      this.gender = null
     },
 
     showLogin(){
@@ -263,11 +176,7 @@ export default {
 
     register: function () {
       let data = {
-        firstname: this.firstname,
-        lastname: this.lastname,
-        patronymic: this.patronymic,
         studentNumber: this.studentNumber,
-        gender: this.gender,
         email: this.email,
         password: this.password
       }
@@ -276,12 +185,6 @@ export default {
           .catch(err => console.log(err))
     }
   },
-
-  beforeMount() {
-    if (!this.isLoggedIn){
-      this.$router.replace('/registration')
-    }
-  }
 }
 </script>
 

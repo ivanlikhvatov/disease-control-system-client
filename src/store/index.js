@@ -20,29 +20,23 @@ export default new Vuex.Store({
     user: state => state.user,
 
     isLoggedIn: state => !!state.token,
-    isStudent: state => state.user.roles.indexOf("STUDENT") !== -1,
-    isAdmin: state => state.user.roles.indexOf("ADMIN") !== -1,
-    isCurator: state => state.user.roles.indexOf("CURATOR") !== -1,
-    isCuratorSupervising: state => state.user.roles.indexOf("CURATOR_SUPERVISING") !== -1,
-    isRectorat: state => state.user.roles.indexOf("RECTORAT") !== -1,
-    isDecanat: state => state.user.roles.indexOf("DECANAT") !== -1,
-    isTeacher: state => state.user.roles.indexOf("TEACHER") !== -1,
+    isStudent: state => state.user.roles && state.user.roles.indexOf("STUDENT") !== -1,
+    isAdmin: state => state.user.roles && state.user.roles.indexOf("ADMIN") !== -1,
+    isCurator: state => state.user.roles && state.user.roles.indexOf("CURATOR") !== -1,
+    isCuratorSupervising: state => state.user.roles && state.user.roles.indexOf("CURATOR_SUPERVISING") !== -1,
+    isRectorat: state => state.user.roles && state.user.roles.indexOf("RECTORAT") !== -1,
+    isDecanat: state => state.user.roles && state.user.roles.indexOf("DECANAT") !== -1,
+    isTeacher: state => state.user.roles && state.user.roles.indexOf("TEACHER") !== -1,
   },
 
   mutations: {
     activation_request(state, response){
       state.serverResponse = response
     },
-    auth_request(state){
-      state.status = 'loading'
-    },
     auth_success(state, user){
       state.status = 'success'
       state.token = user.token
       state.user = user
-    },
-    auth_error(state){
-      state.status = 'error'
     },
     request_failed(state, serverError){
       state.serverError = serverError
@@ -68,57 +62,40 @@ export default new Vuex.Store({
 
   actions: {
     getUserInfo({commit}) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/user/info', method: 'GET'})
             .then(resp => {
               const user = resp.data
               commit('user_info_request', user)
               resolve(resp)
             })
-            .catch(err => {
-              const serverError = err.response.data;
-              commit('request_failed', serverError)
-              reject(err)
-            })
       })
-
     },
 
     resendActivationCode({commit}, activationCode) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/auth/code/resend', params: {expiredActivationCode: activationCode}, method: 'POST'})
             .then(resp => {
               const serverResponse = resp.data.status
               commit('activation_request', serverResponse)
               resolve(resp)
             })
-            .catch(err => {
-              const serverError = err.response.data;
-              commit('request_failed', serverError)
-              reject(err)
-            })
       })
     },
 
     activateAccount({commit}, activationCode) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/auth/activate', params: {activationCode: activationCode}, method: 'POST'})
             .then(resp => {
               const serverResponse = resp.data;
               commit('activation_request', serverResponse)
               resolve(resp)
             })
-            .catch(err => {
-              const serverError = err.response.data;
-              commit('request_failed', serverError)
-              reject(err)
-            })
       })
     },
 
     login({commit}, user){
-      return new Promise((resolve, reject) => {
-        commit('auth_request')
+      return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/auth/login', data: user, method: 'POST' })
             .then(resp => {
               const token = 'Bearer_' + resp.data.token
@@ -128,42 +105,23 @@ export default new Vuex.Store({
               commit('auth_success', user)
               resolve(resp)
             })
-            .catch(err => {
-              commit('auth_error')
-              const serverError = err.response.data;
-              commit('request_failed', serverError)
-              localStorage.removeItem('token')
-              reject(err)
-            })
       })
     },
 
     register({commit}, user){
-      return new Promise((resolve, reject) => {
-        commit('auth_request')
+      return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/auth/registration', data: user, method: 'POST' })
             .then(resp => {
-              // const token = 'Bearer_' + resp.data.token
               const user = resp.data
-              // localStorage.setItem('token', token)
-              // axios.defaults.headers.common['Authorization'] = token
               commit('auth_success', user)
               resolve(resp)
-            })
-            .catch(err => {
-              commit('auth_error', err)
-              const serverError = err.response.data;
-              commit('request_failed', serverError)
-              localStorage.removeItem('token')
-              reject(err)
             })
       })
     },
 
     logout({commit}){
       //TODO послать запрос logout на сервер?
-        // eslint-disable-next-line no-unused-vars
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         commit('logout')
         localStorage.removeItem('token')
         delete axios.defaults.headers.common['Authorization']
@@ -177,6 +135,10 @@ export default new Vuex.Store({
 
     clearServerResponse({commit}){
       commit('clearServerResponse')
+    },
+
+    setServerError({commit}, serverError){
+      commit('request_failed', serverError)
     }
   },
 
