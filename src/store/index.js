@@ -10,7 +10,12 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || '',
     user : {},
     serverError: {},
-    serverResponse: {}
+    serverResponse: {},
+
+    allInstitutes: [],
+    directionsBySelectedInstitute: [],
+    profilesBySelectedDirection: [],
+    groupsBySelectedProfiles: []
   },
 
   getters: {
@@ -27,6 +32,11 @@ export default new Vuex.Store({
     isRectorat: state => state.user.roles && state.user.roles.indexOf("RECTORAT") !== -1,
     isDecanat: state => state.user.roles && state.user.roles.indexOf("DECANAT") !== -1,
     isTeacher: state => state.user.roles && state.user.roles.indexOf("TEACHER") !== -1,
+
+    allInstitutes: state => state.allInstitutes,
+    directionsBySelectedInstitute: state => state.directionsBySelectedInstitute,
+    profilesBySelectedDirection: state => state.profilesBySelectedDirection,
+    groupsBySelectedProfiles: state => state.groupsBySelectedProfiles,
   },
 
   mutations: {
@@ -57,7 +67,23 @@ export default new Vuex.Store({
 
     user_info_request(state, user) {
       state.user = user
-    }
+    },
+
+    get_institutes_request(state, institutes) {
+      state.allInstitutes = institutes;
+    },
+
+    get_directions_request(state, directions) {
+      state.directionsBySelectedInstitute = directions;
+    },
+
+    get_profiles_request(state, profiles) {
+      state.profilesBySelectedDirection = profiles
+    },
+
+    get_groups_request(state, groups) {
+      state.groupsBySelectedProfiles = groups
+    },
   },
 
   actions: {
@@ -114,6 +140,60 @@ export default new Vuex.Store({
             .then(resp => {
               const user = resp.data
               commit('auth_success', user)
+              resolve(resp)
+            })
+      })
+    },
+
+    // eslint-disable-next-line no-unused-vars
+    createUser({commit}, user){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/admin/users/create', data: user, method: 'POST' })
+            .then(resp => {
+              resolve(resp)
+            })
+      })
+    },
+
+    getInstitutes({commit}){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/admin/institutes', method: 'GET' })
+            .then(resp => {
+              const institutes = resp.data;
+              commit('get_institutes_request', institutes)
+              resolve(resp)
+            })
+      })
+    },
+
+    getDirections({commit}, instituteId){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/admin/institutes/'+ instituteId + '/directions', method: 'GET' })
+            .then(resp => {
+              const directions = resp.data;
+              commit('get_directions_request', directions)
+              resolve(resp)
+            })
+      })
+    },
+
+    getProfiles({commit}, directionId){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/admin/directions/'+ directionId + '/profiles', method: 'GET' })
+            .then(resp => {
+              const profiles = resp.data;
+              commit('get_profiles_request', profiles)
+              resolve(resp)
+            })
+      })
+    },
+
+    getGroups({commit}, profileId){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/admin/profiles/'+ profileId + '/groups', method: 'GET' })
+            .then(resp => {
+              const groups = resp.data;
+              commit('get_groups_request', groups)
               resolve(resp)
             })
       })

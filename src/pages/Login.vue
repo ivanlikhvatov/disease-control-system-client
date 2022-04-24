@@ -8,11 +8,11 @@
         </v-card-title>
 
         <v-card-text class="justify-center">
-          <form class="login" @submit.prevent="login">
+          <form class="login" @submit.prevent="authenticateUser">
             <v-text-field
-                v-model="studentNumber"
-                name="studentNumber"
-                label="Номер зачетки"
+                v-model="login"
+                name="login"
+                label="Логин"
                 required
             ></v-text-field>
 
@@ -59,7 +59,7 @@
 
     data(){
       return {
-        studentNumber : "",
+        login : "",
         password : ""
       }
     },
@@ -75,10 +75,10 @@
         this.$router.push('/registration')
       },
 
-      login: function () {
-        let studentNumber = this.studentNumber
+      authenticateUser: function () {
+        let login = this.login
         let password = this.password
-        this.$store.dispatch('login', { studentNumber, password })
+        this.$store.dispatch('login', { login, password })
             .then(() => this.$router.push('/'))
             .catch(err => console.log(err))
       }

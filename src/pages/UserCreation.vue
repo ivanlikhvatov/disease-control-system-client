@@ -1,13 +1,13 @@
 <template>
   <v-container>
     <v-row justify="space-around mt-7">
-      <v-card width="450">
+      <v-card width="550">
         <v-card-title justify="space-around">
-          <p style="font-size: x-large; font-weight: bold; color: slategrey">Введите данные</p>
+          <p style="font-size: x-large; font-weight: bold; color: slategrey">Введите данные нового пользователя</p>
         </v-card-title>
 
         <v-card-text class="justify-center">
-          <form @submit.prevent="register">
+          <form @submit.prevent="createUser">
             <v-text-field
                 name="firstname"
                 v-model="firstname"
@@ -40,47 +40,6 @@
                 @blur="$v.patronymic.$touch()"
             ></v-text-field>
 
-            <v-text-field
-                name="studentNumber"
-                label="Номер зачетки"
-                v-model="studentNumber"
-                :error-messages="studentNumberErrors"
-                required
-                @input="$v.studentNumber.$touch()"
-                @blur="$v.studentNumber.$touch()"
-            ></v-text-field>
-
-            <v-text-field
-                name="email"
-                v-model="email"
-                :error-messages="emailErrors"
-                label="E-mail"
-                required
-                @input="$v.email.$touch()"
-                @blur="$v.email.$touch()"
-            ></v-text-field>
-
-            <v-text-field
-                name="password"
-                v-model="password"
-                type="password"
-                :error-messages="passwordErrors"
-                label="Пароль"
-                required
-                @input="$v.password.$touch()"
-                @blur="$v.password.$touch()"
-            ></v-text-field>
-            <v-text-field
-                name="password_confirmation"
-                v-model="password_confirmation"
-                type="password"
-                :error-messages="passwordConfirmationErrors"
-                label="Введите пароль еще раз"
-                required
-                @input="$v.password_confirmation.$touch()"
-                @blur="$v.password_confirmation.$touch()"
-            ></v-text-field>
-
             <v-select
                 name="gender"
                 v-model="gender"
@@ -91,6 +50,107 @@
                 @change="$v.gender.$touch()"
                 @blur="$v.gender.$touch()"
             ></v-select>
+
+            <v-select
+                name="roles"
+                v-model="roles"
+                :items="roleItems"
+                :error-messages="roleErrors"
+                label="Роли пользователя"
+                multiple
+                chips
+                hint="Выберите роли, которые хотите предоставить пользователю"
+                persistent-hint
+                required
+                @change="[$v.roles.$touch(), setInstituteItems()]"
+                @blur="$v.roles.$touch()"
+            ></v-select>
+
+            <v-text-field
+                v-if="roles.indexOf('Студент') !== -1"
+                name="studentNumber"
+                label="Номер студенческого билета"
+                v-model="studentNumber"
+                :error-messages="studentNumberErrors"
+                required
+                @input="$v.studentNumber.$touch()"
+                @blur="$v.studentNumber.$touch()"
+            ></v-text-field>
+            <v-text-field
+                v-else
+                name="login"
+                label="Логин пользователя"
+                v-model="login"
+                :error-messages="loginErrors"
+                required
+                @input="$v.login.$touch()"
+                @blur="$v.login.$touch()"
+            ></v-text-field>
+
+
+            <div
+                v-if="roles.indexOf('Студент') !== -1"
+            >
+              <v-select
+                  name="institutes"
+                  v-model="institute"
+                  :items="instituteItems"
+                  item-text="fullName"
+                  :error-messages="institutesErrors"
+                  label="Институт"
+                  required
+                  return-object
+                  @change="[$v.institute.$touch(), setDirectionItems()]"
+                  @blur="$v.institute.$touch()"
+              >
+              </v-select>
+
+              <v-select
+                  v-if="institute.id"
+                  name="directions"
+                  v-model="direction"
+                  :items="directionItems"
+                  item-text="fullName"
+                  :error-messages="directionErrors"
+                  label="Направление обучения"
+                  required
+                  return-object
+                  @change="[$v.direction.$touch(), setProfileItems()]"
+                  @blur="$v.direction.$touch()"
+              >
+              </v-select>
+
+              <v-select
+                  v-if="direction.id"
+                  name="profiles"
+                  v-model="profile"
+                  :items="profileItems"
+                  item-text="name"
+                  :error-messages="profileErrors"
+                  label="Профиль направления"
+                  required
+                  return-object
+                  @change="[$v.profile.$touch(), setGroupItems()]"
+                  @blur="$v.profile.$touch()"
+              >
+              </v-select>
+
+              <v-select
+                  v-if="profile.id"
+                  name="groups"
+                  v-model="group"
+                  :items="groupItems"
+                  item-text="name"
+                  :error-messages="groupErrors"
+                  label="Группа"
+                  required
+                  return-object
+                  @change="[$v.group.$touch()]"
+                  @blur="$v.group.$touch()"
+              >
+              </v-select>
+
+            </div>
 
             <p
                 style="color: red"
@@ -108,8 +168,12 @@
                 && firstnameErrors.length === 0
                 && lastnameErrors.length === 0
                 && patronymicErrors.length === 0
-                && passwordErrors.length === 0
-                && passwordConfirmationErrors.length === 0"
+                && loginErrors.length === 0
+                && roleErrors.length === 0
+                && institutesErrors.length === 0
+                && directionErrors.length === 0
+                && profileErrors.length === 0
+                && groupErrors.length === 0"
             >
               Сохранить
             </v-btn>
@@ -129,14 +193,6 @@
             >
               Очистить
             </v-btn>
-
-            <v-btn
-                class="mr-4"
-                color="info"
-                @click="showLogin"
-            >
-              Назад
-            </v-btn>
           </form>
         </v-card-text>
       </v-card>
@@ -146,7 +202,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, maxLength, email } from 'vuelidate/lib/validators'
+import { required, maxLength } from 'vuelidate/lib/validators'
 
 export default {
   name: "UserCreationView",
@@ -158,25 +214,41 @@ export default {
     lastname: { required, maxLength: maxLength(20) },
     patronymic: { maxLength: maxLength(20) },
     studentNumber: { required, maxLength: maxLength(10) },
-    email: { required, email },
+    login: { required, maxLength: maxLength(10) },
     gender: { required },
-    password: { required, maxLength: maxLength(20) },
-    password_confirmation: { required, maxLength: maxLength(20) }
+    roles: { required },
+    institute: { required },
+    direction: { required },
+    profile: { required },
+    group: { required }
   },
 
   data: () => ({
     firstname: '',
     lastname: '',
     patronymic: '',
+    login: '',
     studentNumber: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    gender: null,
+    gender: '',
+    roles: [],
+    institute: {},
+    direction: {},
+    profile: {},
+    group: {},
+
     genderItems: [
       'муж',
       'жен',
-    ]
+    ],
+    roleItems: [
+        'Студент',
+        'Куратор',
+        'Кафедрально ответственный',
+        'Ректорат',
+        'Деканат',
+        'Учитель',
+        'Администратор'
+    ],
   }),
 
   computed: {
@@ -187,6 +259,36 @@ export default {
       const errors = []
       if (!this.$v.gender.$dirty) return errors
       !this.$v.gender.required && errors.push('Gender is required')
+      return errors
+    },
+    roleErrors () {
+      const errors = []
+      if (!this.$v.roles.$dirty) return errors
+      !this.$v.roles.required && errors.push('Roles is required')
+      return errors
+    },
+    institutesErrors () {
+      const errors = []
+      if (!this.$v.institute.$dirty) return errors
+      !this.$v.institute.required && errors.push('Institute is required')
+      return errors
+    },
+    directionErrors () {
+      const errors = []
+      if (!this.$v.direction.$dirty) return errors
+      !this.$v.direction.required && errors.push('Direction is required')
+      return errors
+    },
+    profileErrors () {
+      const errors = []
+      if (!this.$v.profile.$dirty) return errors
+      !this.$v.profile.required && errors.push('Profile is required')
+      return errors
+    },
+    groupErrors () {
+      const errors = []
+      if (!this.$v.group.$dirty) return errors
+      !this.$v.group.required && errors.push('Group is required')
       return errors
     },
     firstnameErrors () {
@@ -209,14 +311,6 @@ export default {
       !this.$v.patronymic.maxLength && errors.push('Name must be at most 20 characters long')
       return errors
     },
-    emailErrors () {
-      const errors = []
-      if (!this.$v.email.$dirty) return errors
-      !this.$v.email.email && errors.push('Must be valid e-mail')
-      !this.$v.email.required && errors.push('E-mail is required')
-
-      return errors
-    },
     studentNumberErrors () {
       const errors = []
       if (!this.$v.studentNumber.$dirty) return errors
@@ -224,23 +318,25 @@ export default {
       !this.$v.studentNumber.required && errors.push('studentNumber is required')
       return errors
     },
-    passwordErrors () {
+    loginErrors () {
       const errors = []
-      if (!this.$v.password.$dirty) return errors
-      !this.$v.password.maxLength && errors.push('Password must be at most 20 characters long')
-      !this.$v.password.required && errors.push('Password is required.')
+      if (!this.$v.studentNumber.$dirty) return errors
+      !this.$v.studentNumber.maxLength && errors.push('studentNumber must be at most 10 characters long')
+      !this.$v.studentNumber.required && errors.push('studentNumber is required')
       return errors
     },
 
-    passwordConfirmationErrors () {
-      const errors = []
-      if (!this.$v.password_confirmation.$dirty) return errors
-      !this.$v.password_confirmation.maxLength && errors.push('Password must be at most 20 characters long')
-      !this.$v.password_confirmation.required && errors.push('Password is required.')
-      if (this.password !== this.password_confirmation) {
-        errors.push('Пароли не совпадают')
-      }
-      return errors
+    instituteItems () {
+      return this.$store.getters.allInstitutes;
+    },
+    directionItems() {
+      return this.$store.getters.directionsBySelectedInstitute
+    },
+    profileItems() {
+      return this.$store.getters.profilesBySelectedDirection
+    },
+    groupItems() {
+      return this.$store.getters.groupsBySelectedProfiles
     }
   },
 
@@ -251,26 +347,72 @@ export default {
       this.lastname = ''
       this.patronymic = ''
       this.studentNumber = ''
-      this.email = ''
-      this.password = ''
-      this.password_confirmation = ''
-      this.gender = null
+      this.login = ''
+      this.gender = []
+      this.roles = []
+      this.institute = {}
+      this.direction = {}
+      this.profile = {}
+      this.group = {}
     },
 
-    showLogin(){
-      this.$router.push('/login')
+    setInstituteItems () {
+      if (this.roles.indexOf('Студент') !== -1) {
+        this.$store.dispatch('getInstitutes')
+      }else {
+        this.institute = {};
+        this.direction = {};
+        this.profile = {};
+        this.group = {};
+      }
     },
 
-    register: function () {
+    setDirectionItems() {
+      if (this.institute.id) {
+        this.$store.dispatch('getDirections', this.institute.id)
+      } else {
+        this.institute = {};
+        this.direction = {};
+        this.profile = {};
+        this.group = {};
+      }
+    },
+
+    setProfileItems() {
+      if (this.direction.id) {
+        this.$store.dispatch('getProfiles', this.direction.id)
+      } else {
+        this.direction = {};
+        this.profile = {};
+        this.group = {}
+      }
+    },
+
+    setGroupItems() {
+      if (this.profile.id) {
+        this.$store.dispatch('getGroups', this.profile.id)
+      } else {
+        this.profile = {};
+        this.group = {}
+      }
+    },
+
+    createUser: function () {
+
+      if (this.login === '') {
+        this.login = this.studentNumber;
+      }
+
       let data = {
         firstname: this.firstname,
         lastname: this.lastname,
         patronymic: this.patronymic,
-        studentNumber: this.studentNumber,
+        login: this.login,
         gender: this.gender,
-        email: this.email,
-        password: this.password
+        roles: this.roles,
+        group: this.group
       }
+
       this.$store.dispatch('createUser', data)
           .then(() => this.$router.push('/'))
           .catch(err => console.log(err))

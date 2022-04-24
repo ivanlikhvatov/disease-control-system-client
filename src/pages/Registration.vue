@@ -10,13 +10,13 @@
           <form @submit.prevent="register">
 
             <v-text-field
-                name="studentNumber"
+                name="login"
                 label="Номер зачетки"
-                v-model="studentNumber"
-                :error-messages="studentNumberErrors"
+                v-model="login"
+                :error-messages="loginErrors"
                 required
-                @input="$v.studentNumber.$touch()"
-                @blur="$v.studentNumber.$touch()"
+                @input="$v.login.$touch()"
+                @blur="$v.login.$touch()"
             ></v-text-field>
 
             <v-text-field
@@ -61,7 +61,7 @@
                 class="mr-4"
                 color="info"
                 type="submit"
-                v-if="studentNumberErrors.length === 0
+                v-if="loginErrors.length === 0
                 && emailErrors.length === 0
                 && passwordErrors.length === 0
                 && passwordConfirmationErrors.length === 0"
@@ -109,14 +109,14 @@ export default {
   mixins: [validationMixin],
 
   validations: {
-    studentNumber: { required, maxLength: maxLength(10) },
+    login: { required, maxLength: maxLength(10) },
     email: { required, email },
     password: { required, maxLength: maxLength(20) },
     password_confirmation: { required, maxLength: maxLength(20) }
   },
 
   data: () => ({
-    studentNumber: '',
+    login: '',
     email: '',
     password: '',
     password_confirmation: ''
@@ -134,11 +134,11 @@ export default {
 
       return errors
     },
-    studentNumberErrors () {
+    loginErrors () {
       const errors = []
-      if (!this.$v.studentNumber.$dirty) return errors
-      !this.$v.studentNumber.maxLength && errors.push('studentNumber must be at most 10 characters long')
-      !this.$v.studentNumber.required && errors.push('studentNumber is required')
+      if (!this.$v.login.$dirty) return errors
+      !this.$v.login.maxLength && errors.push('login must be at most 10 characters long')
+      !this.$v.login.required && errors.push('login is required')
       return errors
     },
     passwordErrors () {
@@ -164,7 +164,7 @@ export default {
   methods: {
     clear () {
       this.$v.$reset()
-      this.studentNumber = ''
+      this.login = ''
       this.email = ''
       this.password = ''
       this.password_confirmation = ''
@@ -176,7 +176,7 @@ export default {
 
     register: function () {
       let data = {
-        studentNumber: this.studentNumber,
+        login: this.login,
         email: this.email,
         password: this.password
       }
