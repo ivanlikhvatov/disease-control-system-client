@@ -28,11 +28,29 @@
               v-model="group"
               active-class="primary--text text--accent-4"
           >
+
+            <v-list-item
+                @click="showProfilePage"
+            >
+              <v-list-item-avatar>
+                <v-avatar color="blue darken-2">
+                  <span class="white--text text-h5">{{username.toString()[0]}}</span>
+                </v-avatar>
+              </v-list-item-avatar>
+              <v-list-item-title>{{username}}</v-list-item-title>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
             <v-list-item
                 @click="showMainPage"
             >
               <v-list-item-icon>
-                <v-icon>mdi-home</v-icon>
+                <v-icon
+                    color="blue darken-2"
+                >
+                  mdi-home
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-title>Главная страница</v-list-item-title>
             </v-list-item>
@@ -41,9 +59,27 @@
               @click="showProfilePage"
             >
               <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
+                <v-icon
+                    color="blue darken-2"
+                >
+                  mdi-account
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-title>Профиль</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+                v-if="isStudent"
+                @click="showAddDiseaseInfoPage"
+            >
+              <v-list-item-icon>
+                <v-icon
+                    color="green darken-2"
+                >
+                  medical_information
+                </v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Добавить заболевание</v-list-item-title>
             </v-list-item>
 
             <v-list-item
@@ -51,7 +87,11 @@
                 @click="showUserCreationPage"
             >
               <v-list-item-icon>
-                <v-icon>person_add</v-icon>
+                <v-icon
+                    color="blue darken-2"
+                >
+                  person_add
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-title>Добавить пользователя</v-list-item-title>
             </v-list-item>
@@ -81,7 +121,10 @@
 
     computed : {
       isLoggedIn : function () { return this.$store.getters.isLoggedIn},
-      isAdmin: function () { return this.$store.getters.isAdmin}
+      isAdmin: function () { return this.$store.getters.isAdmin},
+      isStudent: function () { return this.$store.getters.isStudent},
+      username: function () { return this.$store.getters.user.firstname + ' ' + this.$store.getters.user.lastname },
+      login: function () { return this.$store.getters.user.login}
     },
 
     methods: {
@@ -95,6 +138,10 @@
 
       showUserCreationPage: function () {
         this.$router.push('/create/user')
+      },
+
+      showAddDiseaseInfoPage: function () {
+        this.$router.push('/disease/add')
       },
 
       logout: function () {

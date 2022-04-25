@@ -7,10 +7,20 @@ import Registration from "../pages/Registration.vue";
 import ActivateAccount from "../pages/ActivateAccount.vue";
 import Profile from "../pages/Profile";
 import UserCreation from "../pages/UserCreation";
+import DiseaseAdd from "@/pages/DiseaseAdd";
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/disease/add',
+    name: 'addDisease',
+    component: DiseaseAdd,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkStudentPermission,
+  },
   {
     path: '/create/user',
     name: 'userCreation',
@@ -82,10 +92,18 @@ router.beforeEach((to, from, next) => {
 
 
 function checkAdminPermission(to, from, next) {
-  if(store.getters.isAdmin) {
+  if (store.getters.isAdmin) {
     next();
   } else {
     next('/');
+  }
+}
+
+function checkStudentPermission(to, from, next) {
+  if (store.getters.isStudent) {
+    next();
+  } else {
+    next('/')
   }
 }
 
