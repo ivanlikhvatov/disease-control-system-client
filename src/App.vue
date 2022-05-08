@@ -79,7 +79,7 @@
                   medical_information
                 </v-icon>
               </v-list-item-icon>
-              <v-list-item-title>Добавить заболевание</v-list-item-title>
+              <v-list-item-title>Я заболел</v-list-item-title>
             </v-list-item>
 
             <v-list-item

@@ -163,25 +163,6 @@
                 class="mr-4"
                 color="info"
                 type="submit"
-                v-if="studentNumberErrors.length === 0
-                && genderErrors.length === 0
-                && firstnameErrors.length === 0
-                && lastnameErrors.length === 0
-                && patronymicErrors.length === 0
-                && loginErrors.length === 0
-                && roleErrors.length === 0
-                && institutesErrors.length === 0
-                && directionErrors.length === 0
-                && profileErrors.length === 0
-                && groupErrors.length === 0"
-            >
-              Сохранить
-            </v-btn>
-
-            <v-btn
-                class="mr-4"
-                color="info"
-                v-else
             >
               Сохранить
             </v-btn>
@@ -258,71 +239,96 @@ export default {
     genderErrors () {
       const errors = []
       if (!this.$v.gender.$dirty) return errors
-      !this.$v.gender.required && errors.push('Gender is required')
+      !this.$v.gender.required && errors.push('Данное поле обязательно')
       return errors
     },
     roleErrors () {
       const errors = []
       if (!this.$v.roles.$dirty) return errors
-      !this.$v.roles.required && errors.push('Roles is required')
+      !this.$v.roles.required && errors.push('Данное поле обязательно')
       return errors
     },
     institutesErrors () {
       const errors = []
+
+      if (this.roles.indexOf('Студент') === -1){
+        return errors
+      }
+
       if (!this.$v.institute.$dirty) return errors
-      !this.$v.institute.required && errors.push('Institute is required')
+      !this.$v.institute.required && errors.push('Данное поле обязательно')
       return errors
     },
     directionErrors () {
       const errors = []
+
+      if (this.roles.indexOf('Студент') === -1){
+        return errors
+      }
+
       if (!this.$v.direction.$dirty) return errors
-      !this.$v.direction.required && errors.push('Direction is required')
+      !this.$v.direction.required && errors.push('Данное поле обязательно')
       return errors
     },
     profileErrors () {
       const errors = []
+
+      if (this.roles.indexOf('Студент') === -1){
+        return errors
+      }
+
       if (!this.$v.profile.$dirty) return errors
-      !this.$v.profile.required && errors.push('Profile is required')
+      !this.$v.profile.required && errors.push('Данное поле обязательно')
       return errors
     },
     groupErrors () {
       const errors = []
+
+      if (this.roles.indexOf('Студент') === -1){
+        return errors
+      }
+
       if (!this.$v.group.$dirty) return errors
-      !this.$v.group.required && errors.push('Group is required')
+      !this.$v.group.required && errors.push('Данное поле обязательно')
       return errors
     },
     firstnameErrors () {
       const errors = []
       if (!this.$v.firstname.$dirty) return errors
-      !this.$v.firstname.maxLength && errors.push('Name must be at most 20 characters long')
-      !this.$v.firstname.required && errors.push('Name is required.')
+      !this.$v.firstname.maxLength && errors.push('Данное поле должно содержать не более 20 символов')
+      !this.$v.firstname.required && errors.push('Данное поле обязательно')
       return errors
     },
     lastnameErrors () {
       const errors = []
       if (!this.$v.lastname.$dirty) return errors
-      !this.$v.lastname.maxLength && errors.push('Name must be at most 20 characters long')
-      !this.$v.lastname.required && errors.push('Name is required.')
+      !this.$v.lastname.maxLength && errors.push('Данное поле должно содержать не более 20 символов')
+      !this.$v.lastname.required && errors.push('Данное поле обязательно')
       return errors
     },
     patronymicErrors () {
       const errors = []
       if (!this.$v.patronymic.$dirty) return errors
-      !this.$v.patronymic.maxLength && errors.push('Name must be at most 20 characters long')
+      !this.$v.patronymic.maxLength && errors.push('Данное поле должно содержать не более 20 символов')
       return errors
     },
     studentNumberErrors () {
       const errors = []
+
+      if (this.roles.indexOf('Студент') === -1){
+        return errors
+      }
+
       if (!this.$v.studentNumber.$dirty) return errors
-      !this.$v.studentNumber.maxLength && errors.push('studentNumber must be at most 10 characters long')
-      !this.$v.studentNumber.required && errors.push('studentNumber is required')
+      !this.$v.studentNumber.maxLength && errors.push('Данное поле должно содержать не более 10 символов')
+      !this.$v.studentNumber.required && errors.push('Данное поле обязательно')
       return errors
     },
     loginErrors () {
       const errors = []
-      if (!this.$v.studentNumber.$dirty) return errors
-      !this.$v.studentNumber.maxLength && errors.push('studentNumber must be at most 10 characters long')
-      !this.$v.studentNumber.required && errors.push('studentNumber is required')
+      if (!this.$v.login.$dirty) return errors
+      !this.$v.login.maxLength && errors.push('Данное поле должно содержать не более 10 символов')
+      !this.$v.login.required && errors.push('Данное поле обязательно')
       return errors
     },
 
@@ -397,7 +403,25 @@ export default {
       }
     },
 
-    createUser: function () {
+    isValid() {
+      this.$v.$touch()
+      return this.studentNumberErrors.length === 0
+          && this.genderErrors.length === 0
+          && this.firstnameErrors.length === 0
+          && this.lastnameErrors.length === 0
+          && this.patronymicErrors.length === 0
+          && this.loginErrors.length === 0
+          && this.roleErrors.length === 0
+          && this.institutesErrors.length === 0
+          && this.directionErrors.length === 0
+          && this.profileErrors.length === 0
+          && this.groupErrors.length === 0;
+    },
+
+    createUser () {
+      if (!this.isValid()){
+        return
+      }
 
       if (this.login === '') {
         this.login = this.studentNumber;

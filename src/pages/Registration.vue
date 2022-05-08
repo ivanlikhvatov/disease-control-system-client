@@ -129,31 +129,31 @@ export default {
     emailErrors () {
       const errors = []
       if (!this.$v.email.$dirty) return errors
-      !this.$v.email.email && errors.push('Must be valid e-mail')
-      !this.$v.email.required && errors.push('E-mail is required')
+      !this.$v.email.email && errors.push('Формат e-mail некорректный')
+      !this.$v.email.required && errors.push('Данное поле обязательно')
 
       return errors
     },
     loginErrors () {
       const errors = []
       if (!this.$v.login.$dirty) return errors
-      !this.$v.login.maxLength && errors.push('login must be at most 10 characters long')
-      !this.$v.login.required && errors.push('login is required')
+      !this.$v.login.maxLength && errors.push('Данное поле должно содержать не более 10 символов')
+      !this.$v.login.required && errors.push('Данное поле обязательно')
       return errors
     },
     passwordErrors () {
       const errors = []
       if (!this.$v.password.$dirty) return errors
-      !this.$v.password.maxLength && errors.push('Password must be at most 20 characters long')
-      !this.$v.password.required && errors.push('Password is required.')
+      !this.$v.password.maxLength && errors.push('Данное поле должно содержать не более 20 символов')
+      !this.$v.password.required && errors.push('Данное поле обязательно')
       return errors
     },
 
     passwordConfirmationErrors () {
       const errors = []
       if (!this.$v.password_confirmation.$dirty) return errors
-      !this.$v.password_confirmation.maxLength && errors.push('Password must be at most 20 characters long')
-      !this.$v.password_confirmation.required && errors.push('Password is required.')
+      !this.$v.password_confirmation.maxLength && errors.push('Данное поле должно содержать не более 20 символов')
+      !this.$v.password_confirmation.required && errors.push('Данное поле обязательно')
       if (this.password !== this.password_confirmation) {
         errors.push('Пароли не совпадают')
       }

@@ -7,7 +7,7 @@ import Registration from "../pages/Registration.vue";
 import ActivateAccount from "../pages/ActivateAccount.vue";
 import Profile from "../pages/Profile";
 import UserCreation from "../pages/UserCreation";
-import DiseaseAdd from "@/pages/DiseaseAdd";
+import DiseaseAdd from "@/pages/DiseaseInfoAdd";
 
 Vue.use(VueRouter)
 

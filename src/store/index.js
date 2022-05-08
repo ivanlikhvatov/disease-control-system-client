@@ -15,7 +15,9 @@ export default new Vuex.Store({
     allInstitutes: [],
     directionsBySelectedInstitute: [],
     profilesBySelectedDirection: [],
-    groupsBySelectedProfiles: []
+    groupsBySelectedProfiles: [],
+
+    diseasesExistingInDirectory: [],
   },
 
   getters: {
@@ -37,6 +39,8 @@ export default new Vuex.Store({
     directionsBySelectedInstitute: state => state.directionsBySelectedInstitute,
     profilesBySelectedDirection: state => state.profilesBySelectedDirection,
     groupsBySelectedProfiles: state => state.groupsBySelectedProfiles,
+
+    diseasesExistingInDirectory: state => state.diseasesExistingInDirectory,
   },
 
   mutations: {
@@ -84,6 +88,10 @@ export default new Vuex.Store({
     get_groups_request(state, groups) {
       state.groupsBySelectedProfiles = groups
     },
+
+    get_diseases_existing_in_directory_request(state, diseases) {
+      state.diseasesExistingInDirectory = diseases
+    }
   },
 
   actions: {
@@ -194,6 +202,17 @@ export default new Vuex.Store({
             .then(resp => {
               const groups = resp.data;
               commit('get_groups_request', groups)
+              resolve(resp)
+            })
+      })
+    },
+
+    getDiseasesExistingInDirectory({commit}){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/student/diseases', method: 'GET' })
+            .then(resp => {
+              const institutes = resp.data;
+              commit('get_diseases_existing_in_directory_request', institutes)
               resolve(resp)
             })
       })
