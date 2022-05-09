@@ -1,105 +1,107 @@
 <template>
   <v-container>
-    <v-row justify="space-around mt-7">
-      <v-card width="500">
-        <v-card-title justify="space-around">
-          <p style="font-size: x-large; font-weight: bold; color: #4CAF50">Информация о болезни</p>
-        </v-card-title>
+    <v-card
+        max-width="500"
+        class="mx-auto mt-5"
+        elevation="4"
+    >
+      <v-card-title justify="space-around">
+        <p style="font-size: x-large; font-weight: bold; color: #4CAF50">Информация о болезни</p>
+      </v-card-title>
 
-        <v-card-text class="justify-center">
-          <form @submit.prevent="addDiseaseInfo">
+      <v-card-text class="justify-center">
+        <form @submit.prevent="addDiseaseInfo">
 
-            <v-menu
-                ref="menu"
-                v-model="menu"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                full-width
-                min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                    :error-messages="dateErrors"
-                    required
-                    color="success"
-                    v-model="date"
-                    label="Когда вы заболели"
-                    append-icon="event"
-                    outlined
-                    readonly
-                    @change="$v.date.$touch()"
-                    @blur="$v.date.$touch()"
-                    v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                  ref="picker"
-                  v-model="date"
+          <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              full-width
+              min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                  :error-messages="dateErrors"
+                  required
                   color="success"
-                  :max="new Date().toISOString().substr(0, 10)"
-                  min="1950-01-01"
-              ></v-date-picker>
-            </v-menu>
-
-
-            <v-select
-                name="diseases"
+                  v-model="date"
+                  label="Когда вы заболели"
+                  append-icon="event"
+                  outlined
+                  readonly
+                  @change="$v.date.$touch()"
+                  @blur="$v.date.$touch()"
+                  v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+                ref="picker"
+                v-model="date"
                 color="success"
-                v-model="disease"
-                :items="diseaseItems"
-                :error-messages="diseaseErrors"
-                required
-                label="Заболевание"
-                hint="Выберите из списка Ваше заболевание"
-                return-object
-                item-text="name"
-                @change="[$v.disease.$touch(), checkIsOtherSelected()]"
-                @blur="$v.disease.$touch()"
-            >
-            </v-select>
+                :max="new Date().toISOString().substr(0, 10)"
+                min="1950-01-01"
+            ></v-date-picker>
+          </v-menu>
 
-            <v-textarea
-                v-if="isDiseaseOther"
-                v-model="diseaseOtherDescription"
-                :error-messages="diseaseOtherDescriptionErrors"
-                color="success"
-                required
-                :counter="100"
-                background-color="green lighten-4"
-                filled
-                name="input-7-4"
-                label="Расскажите чем вы заболели"
-                @change="$v.diseaseOtherDescription.$touch()"
-                @blur="$v.diseaseOtherDescription.$touch()"
-            ></v-textarea>
 
-            <p
-                style="color: red"
-                v-if="serverError"
-            >
-              {{serverError}}
-            </p>
+          <v-select
+              name="diseases"
+              color="success"
+              v-model="disease"
+              :items="diseaseItems"
+              :error-messages="diseaseErrors"
+              required
+              label="Заболевание"
+              hint="Выберите из списка Ваше заболевание"
+              return-object
+              item-text="name"
+              @change="[$v.disease.$touch(), checkIsOtherSelected()]"
+              @blur="$v.disease.$touch()"
+          >
+          </v-select>
 
-            <v-btn
-                class="mr-4"
-                color="success"
-                type="submit"
-            >
-              Сохранить
-            </v-btn>
+          <v-textarea
+              v-if="isDiseaseOther"
+              v-model="diseaseOtherDescription"
+              :error-messages="diseaseOtherDescriptionErrors"
+              color="success"
+              required
+              :counter="100"
+              background-color="green lighten-4"
+              filled
+              name="input-7-4"
+              label="Расскажите чем вы заболели"
+              @change="$v.diseaseOtherDescription.$touch()"
+              @blur="$v.diseaseOtherDescription.$touch()"
+          ></v-textarea>
 
-            <v-btn
-                class="mr-4"
-                color="success"
-                @click="clear"
-            >
-              Очистить
-            </v-btn>
-          </form>
-        </v-card-text>
-      </v-card>
-    </v-row>
+          <p
+              style="color: red"
+              v-if="serverError"
+          >
+            {{serverError}}
+          </p>
+
+          <v-btn
+              class="mr-4"
+              color="success"
+              type="submit"
+          >
+            Сохранить
+          </v-btn>
+
+          <v-btn
+              class="mr-4"
+              color="success"
+              @click="clear"
+          >
+            Очистить
+          </v-btn>
+        </form>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
@@ -196,12 +198,20 @@ export default {
         return
       }
 
-      alert("send")
+      let data = {
+        disease: this.disease,
+        otherDiseaseInformation: this.otherDiseaseInformation,
+        dateOfDisease: this.date
+      }
+
+      this.$store.dispatch('addDiseaseInformation', data)
+          .then(() => this.$router.push('/'))
+          .catch(err => console.log(err))
     }
   },
 
   beforeMount() {
-    this.$store.dispatch('getDiseasesExistingInDirectory', this.activationCode);
+    this.$store.dispatch('getDiseasesExistingInDirectory');
   }
 }
 </script>

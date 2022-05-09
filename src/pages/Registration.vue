@@ -61,18 +61,6 @@
                 class="mr-4"
                 color="info"
                 type="submit"
-                v-if="loginErrors.length === 0
-                && emailErrors.length === 0
-                && passwordErrors.length === 0
-                && passwordConfirmationErrors.length === 0"
-            >
-              Сохранить
-            </v-btn>
-
-            <v-btn
-                class="mr-4"
-                color="info"
-                v-else
             >
               Сохранить
             </v-btn>
@@ -174,7 +162,19 @@ export default {
       this.$router.push('/login')
     },
 
+    isValid() {
+      this.$v.$touch()
+      return this.loginErrors.length === 0
+          && this.emailErrors.length === 0
+          && this.passwordErrors.length === 0
+          && this.passwordConfirmationErrors.length === 0
+    },
+
     register: function () {
+      if (!this.isValid()) {
+        return
+      }
+
       let data = {
         login: this.login,
         email: this.email,

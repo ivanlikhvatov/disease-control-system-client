@@ -74,13 +74,29 @@
             >
               <v-list-item-icon>
                 <v-icon
+                    color="warning"
+                >
+                  personal_injury
+                </v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Я заболел</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+                v-if="isStudent"
+                @click="showDiseaseInfoPage"
+            >
+              <v-list-item-icon>
+                <v-icon
                     color="green darken-2"
                 >
                   medical_information
                 </v-icon>
               </v-list-item-icon>
-              <v-list-item-title>Я заболел</v-list-item-title>
+              <v-list-item-title>Мое заболевание</v-list-item-title>
             </v-list-item>
+
+<!--            sick personal_injury medical_information -->
 
             <v-list-item
                 v-if="isAdmin"
@@ -141,7 +157,11 @@
       },
 
       showAddDiseaseInfoPage: function () {
-        this.$router.push('/disease/add')
+        this.$router.push('/disease/info/add')
+      },
+
+      showDiseaseInfoPage: function () {
+        this.$router.push('/disease/info')
       },
 
       logout: function () {

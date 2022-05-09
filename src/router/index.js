@@ -8,12 +8,22 @@ import ActivateAccount from "../pages/ActivateAccount.vue";
 import Profile from "../pages/Profile";
 import UserCreation from "../pages/UserCreation";
 import DiseaseAdd from "@/pages/DiseaseInfoAdd";
+import DiseaseInfo from "@/pages/DiseaseInfo";
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/disease/add',
+    path: '/disease/info',
+    name: 'diseaseInfo',
+    component: DiseaseInfo,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkStudentPermission,
+  },
+  {
+    path: '/disease/info/add',
     name: 'addDisease',
     component: DiseaseAdd,
     meta: {

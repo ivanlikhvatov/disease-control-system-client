@@ -9,6 +9,7 @@ export default new Vuex.Store({
     status: '',
     token: localStorage.getItem('token') || '',
     user : {},
+    activeUserDiseaseInfo: {},
     serverError: {},
     serverResponse: {},
 
@@ -25,6 +26,7 @@ export default new Vuex.Store({
     serverError: state => state.serverError,
     serverResponse: state => state.serverResponse,
     user: state => state.user,
+    activeUserDiseaseInfo: state => state.activeUserDiseaseInfo,
 
     isLoggedIn: state => !!state.token,
     isStudent: state => state.user.roles && state.user.roles.indexOf("STUDENT") !== -1,
@@ -83,6 +85,10 @@ export default new Vuex.Store({
 
     get_profiles_request(state, profiles) {
       state.profilesBySelectedDirection = profiles
+    },
+
+    get_not_closed_user_disease_request(state, activeUserDiseaseInfo) {
+      state.activeUserDiseaseInfo = activeUserDiseaseInfo
     },
 
     get_groups_request(state, groups) {
@@ -163,6 +169,16 @@ export default new Vuex.Store({
       })
     },
 
+    // eslint-disable-next-line no-unused-vars
+    addDiseaseInformation({commit}, data){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/student/diseases/info/add', data: data, method: 'POST' })
+            .then(resp => {
+              resolve(resp)
+            })
+      })
+    },
+
     getInstitutes({commit}){
       return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/admin/institutes', method: 'GET' })
@@ -191,6 +207,17 @@ export default new Vuex.Store({
             .then(resp => {
               const profiles = resp.data;
               commit('get_profiles_request', profiles)
+              resolve(resp)
+            })
+      })
+    },
+
+    getNotClosedUserDisease({commit}){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/student/diseases/info', method: 'GET' })
+            .then(resp => {
+              const activeUserDiseaseInfo = resp.data;
+              commit('get_not_closed_user_disease_request', activeUserDiseaseInfo)
               resolve(resp)
             })
       })
