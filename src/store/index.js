@@ -179,6 +179,16 @@ export default new Vuex.Store({
       })
     },
 
+    // eslint-disable-next-line no-unused-vars
+    editDiseaseInformation({commit}, data){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/student/diseases/info/edit', data: data, method: 'POST' })
+            .then(resp => {
+              resolve(resp)
+            })
+      })
+    },
+
     getInstitutes({commit}){
       return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/admin/institutes', method: 'GET' })
@@ -236,7 +246,7 @@ export default new Vuex.Store({
 
     getDiseasesExistingInDirectory({commit}){
       return new Promise((resolve) => {
-        axios({url: 'http://localhost:9000/api/v1/student/diseases', method: 'GET' })
+        axios({url: 'http://localhost:9000/api/v1/student/diseases', method: 'GET' }) //TODO поправить path: student тут лишнее
             .then(resp => {
               const institutes = resp.data;
               commit('get_diseases_existing_in_directory_request', institutes)

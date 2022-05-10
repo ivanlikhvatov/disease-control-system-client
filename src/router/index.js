@@ -9,10 +9,20 @@ import Profile from "../pages/Profile";
 import UserCreation from "../pages/UserCreation";
 import DiseaseAdd from "@/pages/DiseaseInfoAdd";
 import DiseaseInfo from "@/pages/DiseaseInfo";
+import DiseaseInfoEdit from "@/pages/DiseaseInfoEdit";
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/disease/info/edit',
+    name: 'editDiseaseInfo',
+    component: DiseaseInfoEdit,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkStudentPermission,
+  },
   {
     path: '/disease/info',
     name: 'diseaseInfo',
@@ -24,7 +34,7 @@ const routes = [
   },
   {
     path: '/disease/info/add',
-    name: 'addDisease',
+    name: 'addDiseaseInfo',
     component: DiseaseAdd,
     meta: {
       requiresAuth: true

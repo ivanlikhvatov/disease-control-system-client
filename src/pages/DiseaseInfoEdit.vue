@@ -6,11 +6,11 @@
         elevation="4"
     >
       <v-card-title justify="space-around">
-        <p style="font-size: x-large; font-weight: bold; color: #4CAF50">Информация о болезни</p>
+        <p style="font-size: x-large; font-weight: bold; color: #4CAF50">Измените данные</p>
       </v-card-title>
 
       <v-card-text class="justify-center">
-        <form @submit.prevent="addDiseaseInfo">
+        <form @submit.prevent="editDiseaseInfo">
 
           <v-menu
               ref="menu"
@@ -86,6 +86,8 @@
 
           <v-btn
               class="mr-4"
+              outlined
+              rounded
               color="success"
               type="submit"
           >
@@ -94,10 +96,22 @@
 
           <v-btn
               class="mr-4"
+              outlined
+              rounded
               color="success"
               @click="clear"
           >
             Очистить
+          </v-btn>
+
+          <v-btn
+              class="mr-4"
+              outlined
+              rounded
+              color="success"
+              @click="showDiseaseInfoPage"
+          >
+            Назад
           </v-btn>
         </form>
       </v-card-text>
@@ -110,7 +124,7 @@ import {validationMixin} from "vuelidate";
 import {maxLength, required} from "vuelidate/lib/validators";
 
 export default {
-  name: "DiseaseAddView",
+  name: "DiseaseInfoEditView",
 
   mixins: [validationMixin],
 
@@ -122,6 +136,7 @@ export default {
 
   data: () => ({
     disease: {},
+    diseaseInfoId: '',
     otherDiseaseInformation: null,
     date: '',
 
@@ -163,7 +178,7 @@ export default {
 
     diseaseItems() {
       let tmp = this.$store.getters.diseasesExistingInDirectory;
-      tmp.push("Другое")
+      tmp.push('Другое')
       return tmp;
     },
   },
@@ -177,9 +192,13 @@ export default {
       this.date = ''
     },
 
+    showDiseaseInfoPage() {
+      this.$router.push('/disease/info')
+    },
+
     checkIsOtherSelected() {
 
-      if (this.disease === "Другое"){
+      if (this.disease === 'Другое'){
         this.isDiseaseOther = true
       } else {
         this.otherDiseaseInformation = null
@@ -193,7 +212,7 @@ export default {
           && this.otherDiseaseInformationErrors.length === 0;
     },
 
-    addDiseaseInfo() {
+    editDiseaseInfo() {
       if (!this.isValid()){
         return
       }
@@ -207,18 +226,33 @@ export default {
       let data = {
         disease: diseaseTmp,
         otherDiseaseInformation: this.otherDiseaseInformation,
-        dateOfDisease: this.date
+        dateOfDisease: this.date,
+        id: this.diseaseInfoId
       }
 
-      this.$store.dispatch('addDiseaseInformation', data)
-          .then(() => this.$router.push('/'))
+      this.$store.dispatch('editDiseaseInformation', data)
+          .then(() => this.$router.push('/disease/info'))
           .catch(err => console.log(err))
     }
   },
 
   beforeMount() {
+    this.$store.dispatch('getNotClosedUserDisease');
     this.$store.dispatch('getDiseasesExistingInDirectory');
-  }
+
+    if (!this.$store.getters.activeUserDiseaseInfo.disease) {
+      this.disease = 'Другое'
+      this.isDiseaseOther = true
+      this.otherDiseaseInformation = this.$store.getters.activeUserDiseaseInfo.otherDiseaseInformation
+    } else {
+      this.disease = this.$store.getters.activeUserDiseaseInfo.disease
+      this.isDiseaseOther = false
+      this.otherDiseaseInformation = null
+    }
+
+    this.diseaseInfoId = this.$store.getters.activeUserDiseaseInfo.id
+    this.date = this.$store.getters.activeUserDiseaseInfo.dateOfDisease
+  },
 }
 </script>
 

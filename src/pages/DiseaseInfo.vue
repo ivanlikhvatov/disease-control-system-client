@@ -103,10 +103,6 @@ export default {
     }
   },
 
-  beforeMount() {
-    this.$store.dispatch('getNotClosedUserDisease');
-  },
-
   methods: {
     showAddDiseaseInfoPage() {
       this.$router.push('/disease/info/add')
@@ -115,7 +111,11 @@ export default {
     showEditDiseaseInfo() {
       this.$router.push('/disease/info/edit')
     }
-  }
+  },
+
+  beforeMount() {
+    this.$store.dispatch('getNotClosedUserDisease');
+  },
 }
 </script>
 
