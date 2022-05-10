@@ -11,7 +11,7 @@
 
             <v-text-field
                 name="login"
-                label="Номер зачетки"
+                label="Логин"
                 v-model="login"
                 :error-messages="loginErrors"
                 required
@@ -27,6 +27,17 @@
                 required
                 @input="$v.email.$touch()"
                 @blur="$v.email.$touch()"
+            ></v-text-field>
+
+            <v-text-field
+                name="phoneNumber"
+                v-model="phoneNumber"
+                :counter="10"
+                :error-messages="phoneNumberErrors"
+                label="Телефон"
+                required
+                @input="$v.phoneNumber.$touch()"
+                @blur="$v.phoneNumber.$touch()"
             ></v-text-field>
 
             <v-text-field
@@ -89,7 +100,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, maxLength, email } from 'vuelidate/lib/validators'
+import { required, maxLength, email, minLength, decimal } from 'vuelidate/lib/validators'
 
 export default {
   name: "RegistrationView",
@@ -100,12 +111,14 @@ export default {
     login: { required, maxLength: maxLength(10) },
     email: { required, email },
     password: { required, maxLength: maxLength(20) },
-    password_confirmation: { required, maxLength: maxLength(20) }
+    password_confirmation: { required, maxLength: maxLength(20) },
+    phoneNumber: { decimal, required, maxLength: maxLength(10), minLength: minLength(10)}
   },
 
   data: () => ({
     login: '',
     email: '',
+    phoneNumber: '',
     password: '',
     password_confirmation: ''
   }),
@@ -119,6 +132,16 @@ export default {
       if (!this.$v.email.$dirty) return errors
       !this.$v.email.email && errors.push('Формат e-mail некорректный')
       !this.$v.email.required && errors.push('Данное поле обязательно')
+
+      return errors
+    },
+    phoneNumberErrors () {
+      const errors = []
+      if (!this.$v.phoneNumber.$dirty) return errors
+      !this.$v.phoneNumber.decimal && errors.push('Данное поле должно содержать только цифры')
+      !this.$v.phoneNumber.maxLength && errors.push('Данное поле должно содержать 10 символов')
+      !this.$v.phoneNumber.minLength && errors.push('Данное поле должно содержать 10 символов')
+      !this.$v.phoneNumber.required && errors.push('Данное поле обязательно')
 
       return errors
     },
@@ -168,6 +191,7 @@ export default {
           && this.emailErrors.length === 0
           && this.passwordErrors.length === 0
           && this.passwordConfirmationErrors.length === 0
+          && this.phoneNumberErrors.length === 0
     },
 
     register: function () {
@@ -178,7 +202,8 @@ export default {
       let data = {
         login: this.login,
         email: this.email,
-        password: this.password
+        password: this.password,
+        phoneNumber: this.phoneNumber
       }
       this.$store.dispatch('register', data)
           .then(() => this.$router.push('/'))

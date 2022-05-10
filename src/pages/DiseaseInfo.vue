@@ -95,11 +95,23 @@ export default {
     },
 
     username() {
-      return this.$store.getters.user.firstname + ' ' + this.$store.getters.user.patronymic
+      let patronymic = ''
+
+      if (this.$store.getters.user.patronymic) {
+        patronymic = this.$store.getters.user.patronymic
+      }
+
+      return this.$store.getters.user.firstname + ' ' + patronymic
     },
 
     fullUsername() {
-      return this.$store.getters.user.lastname + ' ' + this.$store.getters.user.firstname + ' ' + this.$store.getters.user.patronymic
+      let patronymic = ''
+
+      if (this.$store.getters.user.patronymic) {
+        patronymic = this.$store.getters.user.patronymic
+      }
+
+      return this.$store.getters.user.lastname + ' ' + this.$store.getters.user.firstname + ' ' + patronymic
     }
   },
 
