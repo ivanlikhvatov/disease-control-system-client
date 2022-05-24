@@ -1,183 +1,185 @@
 <template>
   <v-container>
-    <v-row justify="space-around mt-7">
-      <v-card width="550">
-        <v-card-title justify="space-around">
-          <p style="font-size: x-large; font-weight: bold; color: slategrey">Введите данные нового пользователя</p>
-        </v-card-title>
+    <v-card
+        class="mx-auto mt-5"
+        max-width="550"
+        elevation="4"
+    >
+      <v-card-title justify="space-around">
+        <p style="font-size: x-large; font-weight: bold; color: slategrey">Введите данные</p>
+      </v-card-title>
 
-        <v-card-text class="justify-center">
-          <form @submit.prevent="createUser">
-            <v-text-field
-                name="firstname"
-                v-model="firstname"
-                :error-messages="firstnameErrors"
-                :counter="20"
-                label="Имя"
+      <v-card-text class="justify-center">
+        <form @submit.prevent="createUser">
+          <v-text-field
+              name="firstname"
+              v-model="firstname"
+              :error-messages="firstnameErrors"
+              :counter="20"
+              label="Имя"
+              required
+              @input="$v.firstname.$touch()"
+              @blur="$v.firstname.$touch()"
+          ></v-text-field>
+
+          <v-text-field
+              name="lastname"
+              v-model="lastname"
+              :error-messages="lastnameErrors"
+              :counter="20"
+              label="Фамилия"
+              required
+              @input="$v.lastname.$touch()"
+              @blur="$v.lastname.$touch()"
+          ></v-text-field>
+
+          <v-text-field
+              name="patronymic"
+              v-model="patronymic"
+              :error-messages="patronymicErrors"
+              :counter="20"
+              label="Отчество (при наличии)"
+              @input="$v.patronymic.$touch()"
+              @blur="$v.patronymic.$touch()"
+          ></v-text-field>
+
+          <v-select
+              name="gender"
+              v-model="gender"
+              :items="genderItems"
+              :error-messages="genderErrors"
+              label="Пол"
+              required
+              @change="$v.gender.$touch()"
+              @blur="$v.gender.$touch()"
+          ></v-select>
+
+          <v-select
+              name="roles"
+              v-model="roles"
+              :items="roleItems"
+              :error-messages="roleErrors"
+              label="Роли пользователя"
+              multiple
+              chips
+              hint="Выберите роли, которые хотите предоставить пользователю"
+              persistent-hint
+              required
+              @change="[$v.roles.$touch(), setInstituteItems()]"
+              @blur="$v.roles.$touch()"
+          ></v-select>
+
+          <v-text-field
+              v-if="roles.indexOf('Студент') !== -1"
+              name="studentNumber"
+              label="Номер студенческого билета"
+              v-model="studentNumber"
+              :error-messages="studentNumberErrors"
+              required
+              @input="$v.studentNumber.$touch()"
+              @blur="$v.studentNumber.$touch()"
+          ></v-text-field>
+          <v-text-field
+              v-else
+              name="login"
+              label="Логин пользователя"
+              v-model="login"
+              :error-messages="loginErrors"
+              required
+              @input="$v.login.$touch()"
+              @blur="$v.login.$touch()"
+          ></v-text-field>
+
+
+          <div
+              v-if="roles.indexOf('Студент') !== -1"
+          >
+            <v-select
+                name="institutes"
+                v-model="institute"
+                :items="instituteItems"
+                item-text="fullName"
+                :error-messages="institutesErrors"
+                label="Институт"
                 required
-                @input="$v.firstname.$touch()"
-                @blur="$v.firstname.$touch()"
-            ></v-text-field>
-
-            <v-text-field
-                name="lastname"
-                v-model="lastname"
-                :error-messages="lastnameErrors"
-                :counter="20"
-                label="Фамилия"
-                required
-                @input="$v.lastname.$touch()"
-                @blur="$v.lastname.$touch()"
-            ></v-text-field>
-
-            <v-text-field
-                name="patronymic"
-                v-model="patronymic"
-                :error-messages="patronymicErrors"
-                :counter="20"
-                label="Отчество (при наличии)"
-                @input="$v.patronymic.$touch()"
-                @blur="$v.patronymic.$touch()"
-            ></v-text-field>
+                return-object
+                @change="[$v.institute.$touch(), setDirectionItems()]"
+                @blur="$v.institute.$touch()"
+            >
+            </v-select>
 
             <v-select
-                name="gender"
-                v-model="gender"
-                :items="genderItems"
-                :error-messages="genderErrors"
-                label="Пол"
+                v-if="institute.id"
+                name="directions"
+                v-model="direction"
+                :items="directionItems"
+                item-text="fullName"
+                :error-messages="directionErrors"
+                label="Направление обучения"
                 required
-                @change="$v.gender.$touch()"
-                @blur="$v.gender.$touch()"
-            ></v-select>
+                return-object
+                @change="[$v.direction.$touch(), setProfileItems()]"
+                @blur="$v.direction.$touch()"
+            >
+            </v-select>
 
             <v-select
-                name="roles"
-                v-model="roles"
-                :items="roleItems"
-                :error-messages="roleErrors"
-                label="Роли пользователя"
-                multiple
-                chips
-                hint="Выберите роли, которые хотите предоставить пользователю"
-                persistent-hint
+                v-if="direction.id"
+                name="profiles"
+                v-model="profile"
+                :items="profileItems"
+                item-text="name"
+                :error-messages="profileErrors"
+                label="Профиль направления"
                 required
-                @change="[$v.roles.$touch(), setInstituteItems()]"
-                @blur="$v.roles.$touch()"
-            ></v-select>
+                return-object
+                @change="[$v.profile.$touch(), setGroupItems()]"
+                @blur="$v.profile.$touch()"
+            >
+            </v-select>
 
-            <v-text-field
-                v-if="roles.indexOf('Студент') !== -1"
-                name="studentNumber"
-                label="Номер студенческого билета"
-                v-model="studentNumber"
-                :error-messages="studentNumberErrors"
+            <v-select
+                v-if="profile.id"
+                name="groups"
+                v-model="group"
+                :items="groupItems"
+                item-text="name"
+                :error-messages="groupErrors"
+                label="Группа"
                 required
-                @input="$v.studentNumber.$touch()"
-                @blur="$v.studentNumber.$touch()"
-            ></v-text-field>
-            <v-text-field
-                v-else
-                name="login"
-                label="Логин пользователя"
-                v-model="login"
-                :error-messages="loginErrors"
-                required
-                @input="$v.login.$touch()"
-                @blur="$v.login.$touch()"
-            ></v-text-field>
-
-
-            <div
-                v-if="roles.indexOf('Студент') !== -1"
+                return-object
+                @change="[$v.group.$touch()]"
+                @blur="$v.group.$touch()"
             >
-              <v-select
-                  name="institutes"
-                  v-model="institute"
-                  :items="instituteItems"
-                  item-text="fullName"
-                  :error-messages="institutesErrors"
-                  label="Институт"
-                  required
-                  return-object
-                  @change="[$v.institute.$touch(), setDirectionItems()]"
-                  @blur="$v.institute.$touch()"
-              >
-              </v-select>
+            </v-select>
 
-              <v-select
-                  v-if="institute.id"
-                  name="directions"
-                  v-model="direction"
-                  :items="directionItems"
-                  item-text="fullName"
-                  :error-messages="directionErrors"
-                  label="Направление обучения"
-                  required
-                  return-object
-                  @change="[$v.direction.$touch(), setProfileItems()]"
-                  @blur="$v.direction.$touch()"
-              >
-              </v-select>
+          </div>
 
-              <v-select
-                  v-if="direction.id"
-                  name="profiles"
-                  v-model="profile"
-                  :items="profileItems"
-                  item-text="name"
-                  :error-messages="profileErrors"
-                  label="Профиль направления"
-                  required
-                  return-object
-                  @change="[$v.profile.$touch(), setGroupItems()]"
-                  @blur="$v.profile.$touch()"
-              >
-              </v-select>
+          <p
+              style="color: red"
+              v-if="serverError"
+          >
+            {{serverError}}
+          </p>
 
-              <v-select
-                  v-if="profile.id"
-                  name="groups"
-                  v-model="group"
-                  :items="groupItems"
-                  item-text="name"
-                  :error-messages="groupErrors"
-                  label="Группа"
-                  required
-                  return-object
-                  @change="[$v.group.$touch()]"
-                  @blur="$v.group.$touch()"
-              >
-              </v-select>
+          <v-btn
+              class="mr-4"
+              color="info"
+              type="submit"
+          >
+            Сохранить
+          </v-btn>
 
-            </div>
-
-            <p
-                style="color: red"
-                v-if="serverError"
-            >
-              {{serverError}}
-            </p>
-
-            <v-btn
-                class="mr-4"
-                color="info"
-                type="submit"
-            >
-              Сохранить
-            </v-btn>
-
-            <v-btn
-                class="mr-4"
-                color="info"
-                @click="clear"
-            >
-              Очистить
-            </v-btn>
-          </form>
-        </v-card-text>
-      </v-card>
-    </v-row>
+          <v-btn
+              class="mr-4"
+              color="info"
+              @click="clear"
+          >
+            Очистить
+          </v-btn>
+        </form>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 

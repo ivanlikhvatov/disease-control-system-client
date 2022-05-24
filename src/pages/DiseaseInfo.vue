@@ -49,6 +49,7 @@
             outlined
             rounded
             color="success"
+            @click.stop="isChooseApproveDiseaseMenu = true"
         >
           Я выздоровел
         </v-btn>
@@ -62,6 +63,46 @@
           Редактировать
         </v-btn>
       </v-card-actions>
+
+      <v-dialog
+          v-model="isChooseApproveDiseaseMenu"
+          max-width="550"
+      >
+        <v-card>
+          <v-card-title>
+            Выберите способ подтверждения больничного
+          </v-card-title>
+
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-radio-group
+                v-model="approveType"
+                column
+            >
+              <v-radio
+                  label="Медицинская справка"
+                  value="pdf"
+              ></v-radio>
+              <v-radio
+                  label="Электронный больничный"
+                  value="id"
+              ></v-radio>
+            </v-radio-group>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                outlined
+                rounded
+                color="success"
+                @click="openApproveDiseasePage"
+            >
+              Далее
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
 
     <v-alert
@@ -88,6 +129,11 @@
 <script>
 export default {
   name: "DiseaseInfoView",
+
+  data: () => ({
+    isChooseApproveDiseaseMenu: false,
+    approveType: 'pdf'
+  }),
 
   computed: {
     diseaseInfo() {
@@ -122,6 +168,10 @@ export default {
 
     showEditDiseaseInfo() {
       this.$router.push('/disease/info/edit')
+    },
+
+    openApproveDiseasePage() {
+
     }
   },
 

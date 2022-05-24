@@ -64,24 +64,16 @@
 
           <v-list-item-content>
             <v-list-item-title>
-<!--              <v-combobox-->
-<!--                  v-model="user.roles"-->
-<!--                  chips-->
-<!--                  label="Your favorite hobbies"-->
-<!--                  prepend-icon="mdi-filter-variant"-->
-<!--                  solo-->
-<!--              >-->
-<!--                <template v-slot:selection="{ attrs, item, selected }">-->
-<!--                  <v-chip-->
-<!--                      v-bind="attrs"-->
-<!--                      :input-value="selected"-->
-<!--                  >-->
-<!--                    <strong>{{ item }}</strong>&nbsp;-->
-<!--                  </v-chip>-->
-<!--                </template>-->
-<!--              </v-combobox>-->
-              {{user.roles}}
+              <v-chip-group>
+                <template v-for="role in user.roles">
+                  <v-chip :key="role.id">
+                    {{role}}
+                  </v-chip>
+                </template>
+              </v-chip-group>
+
             </v-list-item-title>
+
             <v-list-item-subtitle>Роли пользователя</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
