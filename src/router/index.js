@@ -10,10 +10,23 @@ import UserCreation from "../pages/UserCreation";
 import DiseaseAdd from "@/pages/DiseaseInfoAdd";
 import DiseaseInfo from "@/pages/DiseaseInfo";
 import DiseaseInfoEdit from "@/pages/DiseaseInfoEdit";
+import DiseaseApproveBySick from "@/pages/DiseaseApproveBySick";
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/disease/approve',
+    name: 'approveDisease',
+    props: route => (
+        { approveType: route.query.approveType }
+    ),
+    component: DiseaseApproveBySick,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkStudentPermission,
+  },
   {
     path: '/disease/info/edit',
     name: 'editDiseaseInfo',

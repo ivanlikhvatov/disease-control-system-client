@@ -1,8 +1,19 @@
 <template>
   <v-container>
+    <div
+        v-if="!serverError.message && !serverResponse.status && !diseaseInfo.id"
+        class="text-center mt-7"
+    >
+      <v-progress-circular
+          :size="90"
+          :width="7"
+          color="primary"
+          indeterminate
+      ></v-progress-circular>
+    </div>
 
     <v-card
-        v-if="diseaseInfo.id"
+        v-else-if="diseaseInfo.id"
         class="mx-auto mt-5"
         max-width="500"
         elevation="4"
@@ -44,6 +55,14 @@
         <div>{{diseaseInfo.dateOfDisease}}</div>
       </v-card-subtitle>
 
+      <v-card-title>
+        Статус заболевания
+      </v-card-title>
+
+      <v-card-subtitle class="text--primary">
+        <div>{{diseaseInfo.status.description}}</div>
+      </v-card-subtitle>
+
       <v-card-actions>
         <v-btn
             outlined
@@ -80,12 +99,12 @@
                 column
             >
               <v-radio
-                  label="Медицинская справка"
-                  value="pdf"
+                  label="Скан медицинской справки"
+                  value="scannedCertificate"
               ></v-radio>
               <v-radio
                   label="Электронный больничный"
-                  value="id"
+                  value="electronicSickId"
               ></v-radio>
             </v-radio-group>
           </v-card-text>
@@ -132,10 +151,18 @@ export default {
 
   data: () => ({
     isChooseApproveDiseaseMenu: false,
-    approveType: 'pdf'
+    approveType: 'scannedCertificate'
   }),
 
   computed: {
+    serverResponse () {
+      return this.$store.getters.serverResponse
+    },
+
+    serverError () {
+      return this.$store.getters.serverError
+    },
+
     diseaseInfo() {
       return this.$store.getters.activeUserDiseaseInfo
     },
@@ -171,7 +198,7 @@ export default {
     },
 
     openApproveDiseasePage() {
-
+      this.$router.push({ path: '/disease/approve', query: { approveType: this.approveType }})
     }
   },
 

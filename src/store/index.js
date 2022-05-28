@@ -89,6 +89,7 @@ export default new Vuex.Store({
 
     get_not_closed_user_disease_request(state, activeUserDiseaseInfo) {
       state.activeUserDiseaseInfo = activeUserDiseaseInfo
+      state.serverResponse = activeUserDiseaseInfo
     },
 
     get_groups_request(state, groups) {
@@ -173,6 +174,16 @@ export default new Vuex.Store({
     addDiseaseInformation({commit}, data){
       return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/student/diseases/info/add', data: data, method: 'POST' })
+            .then(resp => {
+              resolve(resp)
+            })
+      })
+    },
+
+    // eslint-disable-next-line no-unused-vars
+    approveDiseaseBySick({commit}, data){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/student/diseases/approve', data: data, method: 'POST' })
             .then(resp => {
               resolve(resp)
             })
