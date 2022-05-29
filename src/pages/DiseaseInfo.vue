@@ -198,7 +198,7 @@ export default {
     },
 
     openApproveDiseasePage() {
-      this.$router.push({ path: '/disease/approve', query: { approveType: this.approveType }})
+      this.$router.push({ path: '/disease/approve', query: { approveType: this.approveType, diseaseId: this.diseaseInfo.id, dateOfDisease: this.diseaseInfo.dateOfDisease }})
     }
   },
 

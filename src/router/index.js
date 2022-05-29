@@ -19,7 +19,7 @@ const routes = [
     path: '/disease/approve',
     name: 'approveDisease',
     props: route => (
-        { approveType: route.query.approveType }
+        { approveType: route.query.approveType, diseaseId: route.query.diseaseId, dateOfDisease: route.query.dateOfDisease }
     ),
     component: DiseaseApproveBySick,
     meta: {

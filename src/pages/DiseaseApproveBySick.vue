@@ -11,6 +11,39 @@
 
       <v-card-text class="justify-center">
         <form @submit.prevent="approveDisease">
+          <v-menu
+              ref="menu"
+              v-model="dateMenu"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              full-width
+              min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                  :error-messages="dateOfRecoveryErrors"
+                  required
+                  color="info"
+                  v-model="dateOfRecovery"
+                  label="Когда вы выздоровели"
+                  append-icon="event"
+                  outlined
+                  readonly
+                  @change="$v.dateOfRecovery.$touch()"
+                  @blur="$v.dateOfRecovery.$touch()"
+                  v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+                ref="picker"
+                v-model="dateOfRecovery"
+                color="info"
+                :max="new Date().toISOString().substr(0, 10)"
+                :min="dateOfDisease"
+            ></v-date-picker>
+          </v-menu>
+
           <v-text-field
               v-if="approveType === 'electronicSickId'"
               name="electronicSickIdInput"
@@ -24,6 +57,7 @@
           ></v-text-field>
 
           <v-file-input
+              id="scannedCertificatePdfFile"
               v-if="approveType === 'scannedCertificate'"
               :error-messages="scannedCertificateErrors"
               v-model="scannedCertificate"
@@ -37,6 +71,8 @@
 
           <v-btn
               class="mr-4"
+              outlined
+              rounded
               color="info"
               type="submit"
           >
@@ -45,10 +81,22 @@
 
           <v-btn
               class="mr-4"
+              outlined
+              rounded
               color="info"
               @click="clear"
           >
             Очистить
+          </v-btn>
+
+          <v-btn
+              class="mr-4"
+              outlined
+              rounded
+              color="info"
+              @click="showDiseaseInfoPage"
+          >
+            Назад
           </v-btn>
 
         </form>
@@ -63,21 +111,33 @@ import {validationMixin} from "vuelidate";
 
 export default {
   name: "DiseaseApproveBySickView",
-  props: ['approveType'],
+  props: ['approveType', 'diseaseId', 'dateOfDisease'],
 
   mixins: [validationMixin],
 
   validations: {
     electronicSickId: { required, maxLength: maxLength(50) },
-    scannedCertificate: { required }
+    scannedCertificate: { required },
+    dateOfRecovery: { required }
   },
 
   data: () => ({
     electronicSickId: '',
     scannedCertificate: null,
+    base64ScannedCertificate: null,
+    dateOfRecovery: '',
+
+    dateMenu: false
   }),
 
   computed: {
+    dateOfRecoveryErrors () {
+      const errors = []
+      if (!this.$v.dateOfRecovery.$dirty) return errors
+      !this.$v.dateOfRecovery.required && errors.push('Данное поле обязательно')
+      return errors
+    },
+
     electronicSickIdErrors () {
       const errors = []
 
@@ -115,27 +175,70 @@ export default {
       this.scannedCertificate = null
     },
 
+    showDiseaseInfoPage() {
+      this.$router.push('/disease/info')
+    },
+
     isValid() {
       this.$v.$touch()
-      return this.electronicSickIdErrors.length === 0 && this.scannedCertificateErrors.length === 0;
+      return this.electronicSickIdErrors.length === 0
+          && this.scannedCertificateErrors.length === 0
+          && this.dateOfRecoveryErrors.length === 0;
+    },
+
+    getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
     },
 
     approveDisease() {
-
       if (!this.isValid()){
         return
       }
 
+      if (this.approveType === 'scannedCertificate') {
+        this.sendRequestWithFile()
+      }
+
+      if (this.approveType === 'electronicSickId') {
+        this.sendRequestWithId()
+      }
+    },
+
+    sendRequestWithFile() {
+      let file = document.getElementById("scannedCertificatePdfFile").files[0];
+
+      this.getBase64(file)
+          .then(base64File => {
+
+            let data = {
+              id: this.diseaseId,
+              approveType: this.approveType,
+              dateOfRecovery: this.dateOfRecovery,
+              scannedCertificate: base64File,
+            }
+
+            this.$store.dispatch('approveDiseaseBySick', data)
+                .then(() => this.$router.push('/'))
+                .catch(err => console.log(err))
+          })
+    },
+
+    sendRequestWithId() {
       let data = {
+        id: this.diseaseId,
         approveType: this.approveType,
+        dateOfRecovery: this.dateOfRecovery,
         electronicSickId: this.electronicSickId,
-        scannedCertificate: this.scannedCertificate
       }
 
       this.$store.dispatch('approveDiseaseBySick', data)
           .then(() => this.$router.push('/'))
           .catch(err => console.log(err))
-
     }
   }
 }

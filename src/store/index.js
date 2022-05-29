@@ -89,7 +89,10 @@ export default new Vuex.Store({
 
     get_not_closed_user_disease_request(state, activeUserDiseaseInfo) {
       state.activeUserDiseaseInfo = activeUserDiseaseInfo
-      state.serverResponse = activeUserDiseaseInfo
+
+      state.serverResponse = {
+        status: 'ok'
+      }
     },
 
     get_groups_request(state, groups) {

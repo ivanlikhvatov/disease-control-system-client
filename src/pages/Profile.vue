@@ -80,7 +80,9 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item>
+        <v-list-item
+          v-if="isStudent"
+        >
           <v-list-item-icon>
             <v-icon color="primary">
               school
@@ -93,7 +95,9 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item
+            v-if="isStudent"
+        >
           <v-list-item-action></v-list-item-action>
 
           <v-list-item-content>
@@ -102,7 +106,9 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item
+            v-if="isStudent"
+        >
           <v-list-item-action></v-list-item-action>
 
           <v-list-item-content>
@@ -125,6 +131,8 @@ export default {
     user() {
       return this.$store.getters.user
     },
+
+    isStudent: function () { return this.$store.getters.isStudent},
 
     username() {
 

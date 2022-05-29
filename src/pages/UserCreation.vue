@@ -155,6 +155,24 @@
 
           </div>
 
+          <div
+              v-if="roles.indexOf('Деканат') !== -1"
+          >
+            <v-select
+                name="institutes"
+                v-model="institute"
+                :items="instituteItems"
+                item-text="fullName"
+                :error-messages="institutesErrors"
+                label="Институт"
+                required
+                return-object
+                @change="$v.institute.$touch()"
+                @blur="$v.institute.$touch()"
+            >
+            </v-select>
+          </div>
+
           <p
               style="color: red"
               v-if="serverError"
@@ -253,7 +271,7 @@ export default {
     institutesErrors () {
       const errors = []
 
-      if (this.roles.indexOf('Студент') === -1){
+      if (this.roles.indexOf('Студент') === -1 && this.roles.indexOf('Деканат') === -1){
         return errors
       }
 
@@ -365,7 +383,7 @@ export default {
     },
 
     setInstituteItems () {
-      if (this.roles.indexOf('Студент') !== -1) {
+      if (this.roles.indexOf('Студент') !== -1 || this.roles.indexOf('Деканат') !== -1) {
         this.$store.dispatch('getInstitutes')
       }else {
         this.institute = {};
@@ -429,14 +447,30 @@ export default {
         this.login = this.studentNumber;
       }
 
-      let data = {
-        firstname: this.firstname,
-        lastname: this.lastname,
-        patronymic: this.patronymic,
-        login: this.login,
-        gender: this.gender,
-        roles: this.roles,
-        group: this.group
+      let data;
+
+      if (this.roles.indexOf('Студент') !== -1) {
+        data = {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          patronymic: this.patronymic,
+          login: this.login,
+          gender: this.gender,
+          roles: this.roles,
+          group: this.group
+        }
+      }
+
+      if (this.roles.indexOf('Деканат') !== -1) {
+        data = {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          patronymic: this.patronymic,
+          login: this.login,
+          gender: this.gender,
+          roles: this.roles,
+          institute: this.institute
+        }
       }
 
       this.$store.dispatch('createUser', data)
