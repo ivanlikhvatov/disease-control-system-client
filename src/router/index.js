@@ -11,13 +11,37 @@ import DiseaseAdd from "@/pages/DiseaseInfoAdd";
 import DiseaseInfo from "@/pages/DiseaseInfo";
 import DiseaseInfoEdit from "@/pages/DiseaseInfoEdit";
 import DiseaseApproveBySick from "@/pages/DiseaseApproveBySick";
+import DiseaseProcessedList from "@/pages/DiseaseProcessedList";
+import DiseaseApproveByDecanat from "@/pages/DiseaseApproveByDecanat";
 
 Vue.use(VueRouter)
 
 const routes = [
+
   {
-    path: '/disease/approve',
-    name: 'approveDisease',
+    path: '/diseases/status/processed',
+    name: 'diseaseProcessedList',
+    component: DiseaseProcessedList,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkDecanatPermission,
+  },
+  {
+    path: '/disease/approve/byDecanat',
+    name: 'approveDiseaseByDecanat',
+    component: DiseaseApproveByDecanat,
+    props: route => (
+        { diseaseInfo: route.query.diseaseInfo }
+    ),
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkDecanatPermission,
+  },
+  {
+    path: '/disease/approve/bySick',
+    name: 'approveDiseaseBySick',
     props: route => (
         { approveType: route.query.approveType, diseaseId: route.query.diseaseId, dateOfDisease: route.query.dateOfDisease }
     ),
@@ -134,6 +158,14 @@ function checkAdminPermission(to, from, next) {
 
 function checkStudentPermission(to, from, next) {
   if (store.getters.isStudent) {
+    next();
+  } else {
+    next('/')
+  }
+}
+
+function checkDecanatPermission(to, from, next) {
+  if (store.getters.isDecanat) {
     next();
   } else {
     next('/')

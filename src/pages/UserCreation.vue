@@ -277,6 +277,9 @@ export default {
 
       if (!this.$v.institute.$dirty) return errors
       !this.$v.institute.required && errors.push('Данное поле обязательно')
+
+      alert(errors.length)
+
       return errors
     },
     directionErrors () {
@@ -344,8 +347,14 @@ export default {
       !this.$v.studentNumber.required && errors.push('Данное поле обязательно')
       return errors
     },
+
     loginErrors () {
       const errors = []
+
+      if (this.roles.indexOf('Студент') !== -1){
+        return errors
+      }
+
       if (!this.$v.login.$dirty) return errors
       !this.$v.login.maxLength && errors.push('Данное поле должно содержать не более 10 символов')
       !this.$v.login.required && errors.push('Данное поле обязательно')
@@ -425,6 +434,19 @@ export default {
 
     isValid() {
       this.$v.$touch()
+
+      console.log("this.studentNumberErrors.length: " + this.studentNumberErrors.length)
+      console.log("this.genderErrors.length: " + this.genderErrors.length)
+      console.log("this.firstnameErrors.length: " + this.firstnameErrors.length)
+      console.log("this.lastnameErrors.length: " + this.lastnameErrors.length)
+      console.log("this.patronymicErrors.length: " + this.patronymicErrors.length)
+      console.log("this.loginErrors.length: " + this.loginErrors.length)
+      console.log("this.roleErrors.length: " + this.roleErrors.length)
+      console.log("this.institutesErrors.length: " + this.institutesErrors.length)
+      console.log("this.directionErrors.length: " + this.directionErrors.length)
+      console.log("this.profileErrors.length: " + this.profileErrors.length)
+      console.log("this.groupErrors.length: " + this.groupErrors.length)
+
       return this.studentNumberErrors.length === 0
           && this.genderErrors.length === 0
           && this.firstnameErrors.length === 0
@@ -440,6 +462,7 @@ export default {
 
     createUser () {
       if (!this.isValid()){
+        alert("не валидно")
         return
       }
 

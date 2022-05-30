@@ -198,12 +198,12 @@ export default {
     },
 
     openApproveDiseasePage() {
-      this.$router.push({ path: '/disease/approve', query: { approveType: this.approveType, diseaseId: this.diseaseInfo.id, dateOfDisease: this.diseaseInfo.dateOfDisease }})
+      this.$router.push({ path: '/disease/approve/bySick', query: { approveType: this.approveType, diseaseId: this.diseaseInfo.id, dateOfDisease: this.diseaseInfo.dateOfDisease }})
     }
   },
 
   beforeMount() {
-    this.$store.dispatch('getNotClosedUserDisease');
+    this.$store.dispatch('getActiveUserDisease');
   },
 }
 </script>

@@ -111,6 +111,20 @@
               </v-list-item-icon>
               <v-list-item-title>Добавить пользователя</v-list-item-title>
             </v-list-item>
+
+            <v-list-item
+                v-if="isDecanat"
+                @click="showProcessedDiseasesPage"
+            >
+              <v-list-item-icon>
+                <v-icon
+                    color="blue darken-2"
+                >
+                  approval
+                </v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Подтвердить больничные</v-list-item-title>
+            </v-list-item>
           </v-list-item-group>
         </v-list>
       </v-navigation-drawer>
@@ -138,6 +152,7 @@
     computed : {
       isLoggedIn : function () { return this.$store.getters.isLoggedIn},
       isAdmin: function () { return this.$store.getters.isAdmin},
+      isDecanat: function () { return this.$store.getters.isDecanat},
       isStudent: function () { return this.$store.getters.isStudent},
       username: function () { return this.$store.getters.user.firstname + ' ' + this.$store.getters.user.lastname },
       login: function () { return this.$store.getters.user.login}
@@ -162,6 +177,10 @@
 
       showDiseaseInfoPage: function () {
         this.$router.push('/disease/info')
+      },
+
+      showProcessedDiseasesPage: function () {
+        this.$router.push('/diseases/status/processed')
       },
 
       logout: function () {

@@ -1,6 +1,6 @@
 **Сделать**
-1) Исправить текст ошибок на русский
-
+1) Поправить баг с загрузкой, при нажатии на navbar
+2) Выровнить в diseaseProcessedList карты (min-width="400")
 # disease-control-system-client
 
 ## Project setup

@@ -10,6 +10,7 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || '',
     user : {},
     activeUserDiseaseInfo: {},
+    processedDiseasesList: [],
     serverError: {},
     serverResponse: {},
 
@@ -27,6 +28,7 @@ export default new Vuex.Store({
     serverResponse: state => state.serverResponse,
     user: state => state.user,
     activeUserDiseaseInfo: state => state.activeUserDiseaseInfo,
+    processedDiseasesList: state => state.processedDiseasesList,
 
     isLoggedIn: state => !!state.token,
     isStudent: state => state.user.roles && state.user.roles.indexOf("STUDENT") !== -1,
@@ -87,8 +89,16 @@ export default new Vuex.Store({
       state.profilesBySelectedDirection = profiles
     },
 
-    get_not_closed_user_disease_request(state, activeUserDiseaseInfo) {
+    get_active_user_disease_request(state, activeUserDiseaseInfo) {
       state.activeUserDiseaseInfo = activeUserDiseaseInfo
+
+      state.serverResponse = {
+        status: 'ok'
+      }
+    },
+
+    get_processed_diseases_list_request(state, processedDiseasesList) {
+      state.processedDiseasesList = processedDiseasesList
 
       state.serverResponse = {
         status: 'ok'
@@ -186,7 +196,37 @@ export default new Vuex.Store({
     // eslint-disable-next-line no-unused-vars
     approveDiseaseBySick({commit}, data){
       return new Promise((resolve) => {
-        axios({url: 'http://localhost:9000/api/v1/student/diseases/approve', data: data, method: 'POST' })
+        axios({url: 'http://localhost:9000/api/v1/student/diseases/info/approve/bySick', data: data, method: 'POST' })
+            .then(resp => {
+              resolve(resp)
+            })
+      })
+    },
+
+    // eslint-disable-next-line no-unused-vars
+    approveDiseaseByDecanat({commit}, diseaseId){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/decanat/diseases/' + diseaseId +'/approve', method: 'POST' })
+            .then(resp => {
+              resolve(resp)
+            })
+      })
+    },
+
+    // eslint-disable-next-line no-unused-vars
+    refundDiseaseToUser({commit}, data){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/decanat/diseases/' + data.diseaseId +'/refund', params: {refundCause: data.refundCause}, method: 'POST' })
+            .then(resp => {
+              resolve(resp)
+            })
+      })
+    },
+
+    // eslint-disable-next-line no-unused-vars
+    rejectDisease({commit}, data){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/decanat/diseases/' + data.diseaseId +'/reject', params: {rejectCause: data.rejectCause}, method: 'POST' })
             .then(resp => {
               resolve(resp)
             })
@@ -236,12 +276,23 @@ export default new Vuex.Store({
       })
     },
 
-    getNotClosedUserDisease({commit}){
+    getActiveUserDisease({commit}){
       return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/student/diseases/info', method: 'GET' })
             .then(resp => {
               const activeUserDiseaseInfo = resp.data;
-              commit('get_not_closed_user_disease_request', activeUserDiseaseInfo)
+              commit('get_active_user_disease_request', activeUserDiseaseInfo)
+              resolve(resp)
+            })
+      })
+    },
+
+    getProcessedDiseasesList({commit}){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/decanat/diseases/processed', method: 'GET' })
+            .then(resp => {
+              const processedDiseasesList = resp.data;
+              commit('get_processed_diseases_list_request', processedDiseasesList)
               resolve(resp)
             })
       })
