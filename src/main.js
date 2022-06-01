@@ -8,6 +8,12 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 
+import VueApexCharts from 'vue-apexcharts'
+Vue.use(VueApexCharts)
+
+// eslint-disable-next-line vue/multi-word-component-names
+Vue.component('apexchart', VueApexCharts)
+
 Vue.config.productionTip = false
 Vue.use(Vuetify)
 
@@ -24,4 +30,3 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
-

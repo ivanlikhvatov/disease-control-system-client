@@ -20,6 +20,10 @@ export default new Vuex.Store({
     groupsBySelectedProfiles: [],
 
     diseasesExistingInDirectory: [],
+
+
+    // //TODO временная сущность для показа графика на главной для деканата
+    // countDiseasesByDaysInTwoLastWeeks: {}
   },
 
   getters: {
@@ -29,6 +33,9 @@ export default new Vuex.Store({
     user: state => state.user,
     activeUserDiseaseInfo: state => state.activeUserDiseaseInfo,
     processedDiseasesList: state => state.processedDiseasesList,
+
+    // //TODO временная сущность для показа графика на главной для деканата
+    // countDiseasesByDaysInTwoLastWeeks: state => state.countDiseasesByDaysInTwoLastWeeks,
 
     isLoggedIn: state => !!state.token,
     isStudent: state => state.user.roles && state.user.roles.indexOf("STUDENT") !== -1,

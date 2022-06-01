@@ -13,11 +13,21 @@ import DiseaseInfoEdit from "@/pages/DiseaseInfoEdit";
 import DiseaseApproveBySick from "@/pages/DiseaseApproveBySick";
 import DiseaseProcessedList from "@/pages/DiseaseProcessedList";
 import DiseaseApproveByDecanat from "@/pages/DiseaseApproveByDecanat";
+import ChooseStatistic from "@/pages/ChooseStatistic";
 
 Vue.use(VueRouter)
 
 const routes = [
 
+  {
+    path: '/diseases/statistic/choose',
+    name: 'chooseStatistic',
+    component: ChooseStatistic,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkWatchStatisticPermission,
+  },
   {
     path: '/diseases/status/processed',
     name: 'diseaseProcessedList',
@@ -166,6 +176,19 @@ function checkStudentPermission(to, from, next) {
 
 function checkDecanatPermission(to, from, next) {
   if (store.getters.isDecanat) {
+    next();
+  } else {
+    next('/')
+  }
+}
+
+function checkWatchStatisticPermission(to, from, next) {
+  if (store.getters.isDecanat
+      || store.getters.isAdmin
+      || store.getters.isTeacher
+      || store.getters.isCurator
+      || store.getters.isCuratorSupervising
+      || store.getters.isRectorat) {
     next();
   } else {
     next('/')

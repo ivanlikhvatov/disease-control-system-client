@@ -96,8 +96,6 @@
               <v-list-item-title>Мое заболевание</v-list-item-title>
             </v-list-item>
 
-<!--            sick personal_injury medical_information -->
-
             <v-list-item
                 v-if="isAdmin"
                 @click="showUserCreationPage"
@@ -123,7 +121,21 @@
                   approval
                 </v-icon>
               </v-list-item-icon>
-              <v-list-item-title>Подтвердить больничные</v-list-item-title>
+              <v-list-item-title>Больничные</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+                v-if="isAdmin || isTeacher || isCurator || isCuratorSupervising || isRectorat || isDecanat"
+                @click="showChooseStatisticPage"
+            >
+              <v-list-item-icon>
+                <v-icon
+                    color="success"
+                >
+                  query_stats
+                </v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Статистика</v-list-item-title>
             </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -132,6 +144,15 @@
       <v-main>
         <router-view/>
       </v-main>
+
+      <v-footer padless>
+        <v-col
+            class="text-center"
+            cols="12"
+        >
+          {{ new Date().getFullYear() }} — <strong>Система контроля заболеваемости</strong>
+        </v-col>
+      </v-footer>
     </v-app>
   </div>
 </template>
@@ -154,6 +175,10 @@
       isAdmin: function () { return this.$store.getters.isAdmin},
       isDecanat: function () { return this.$store.getters.isDecanat},
       isStudent: function () { return this.$store.getters.isStudent},
+      isCurator: function () { return this.$store.getters.isCurator},
+      isRectorat: function () { return this.$store.getters.isRectorat},
+      isCuratorSupervising: function () { return this.$store.getters.isCuratorSupervising},
+      isTeacher: function () { return this.$store.getters.isTeacher},
       username: function () { return this.$store.getters.user.firstname + ' ' + this.$store.getters.user.lastname },
       login: function () { return this.$store.getters.user.login}
     },
@@ -181,6 +206,10 @@
 
       showProcessedDiseasesPage: function () {
         this.$router.push('/diseases/status/processed')
+      },
+
+      showChooseStatisticPage: function () {
+        this.$router.push('/diseases/statistic/choose')
       },
 
       logout: function () {

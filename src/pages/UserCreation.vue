@@ -278,8 +278,6 @@ export default {
       if (!this.$v.institute.$dirty) return errors
       !this.$v.institute.required && errors.push('Данное поле обязательно')
 
-      alert(errors.length)
-
       return errors
     },
     directionErrors () {
@@ -462,7 +460,6 @@ export default {
 
     createUser () {
       if (!this.isValid()){
-        alert("не валидно")
         return
       }
 
