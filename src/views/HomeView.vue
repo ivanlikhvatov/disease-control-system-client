@@ -1,20 +1,21 @@
 <template>
   <v-container>
-    <main-slider-for-decanat v-if="isDecanat"></main-slider-for-decanat>
-    <main-middle-panel-for-decanat v-if="isDecanat"></main-middle-panel-for-decanat>
+    <decanat-main-panel v-if="isDecanat"></decanat-main-panel>
+    <student-main-panel v-if="isStudent"></student-main-panel>
   </v-container>
 </template>
 
 <script>
-import MainSliderForDecanat from "@/components/decanat/MainSliderForDecanat";
-import MainMiddlePanelForDecanat from "@/components/decanat/MainMiddlePanelForDecanat";
+
+import DecanatMainPanel from "@/components/decanat/DecanatMainPanel";
+import StudentMainPanel from "@/components/student/StudentMainPanel";
 
 export default {
   name: "HomeViewView",
 
   components: {
-    MainSliderForDecanat,
-    MainMiddlePanelForDecanat,
+    DecanatMainPanel,
+    StudentMainPanel
   },
 
   computed : {
@@ -24,6 +25,7 @@ export default {
     isRectorat: function () { return this.$store.getters.isRectorat},
     isCuratorSupervising: function () { return this.$store.getters.isCuratorSupervising},
     isTeacher: function () { return this.$store.getters.isTeacher},
+    isStudent: function () { return this.$store.getters.isStudent}
   },
 }
 </script>

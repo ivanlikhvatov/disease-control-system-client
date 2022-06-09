@@ -65,8 +65,8 @@ export default {
 
 
   created() {
-    this.series[0].data = this.$store.getters.user.decanatAdditionalInfo.countOfDiseasesByDaysForTwoWeeks.countsOfSick
-    this.options.xaxis.categories = this.$store.getters.user.decanatAdditionalInfo.countOfDiseasesByDaysForTwoWeeks.dates
+    this.series[0].data = this.$store.getters.user.additionalInfo.decanatAdditionalInfo.countOfDiseasesByDaysForTwoWeeks.countsOfSick
+    this.options.xaxis.categories = this.$store.getters.user.additionalInfo.decanatAdditionalInfo.countOfDiseasesByDaysForTwoWeeks.dates
 
   }
 }

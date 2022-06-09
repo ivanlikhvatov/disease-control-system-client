@@ -14,10 +14,21 @@ import DiseaseApproveBySick from "@/pages/DiseaseApproveBySick";
 import DiseaseProcessedList from "@/pages/DiseaseProcessedList";
 import DiseaseApproveByDecanat from "@/pages/DiseaseApproveByDecanat";
 import ChooseStatistic from "@/pages/ChooseStatistic";
+import DiseaseActiveList from "@/pages/DiseaseActiveList";
 
 Vue.use(VueRouter)
 
 const routes = [
+
+  {
+    path: '/diseases/status/active',
+    name: 'diseaseActiveList',
+    component: DiseaseActiveList,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkDecanatPermission,
+  },
 
   {
     path: '/diseases/statistic/choose',

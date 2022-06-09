@@ -16,7 +16,7 @@
             cloud_upload
           </v-icon>
         </v-btn>
-        Больничные ожидающие подтверждения
+        Болеют сейчас
         <v-spacer></v-spacer>
         <v-text-field
             v-model="search"
@@ -26,30 +26,27 @@
             hide-details
         ></v-text-field>
       </v-card-title>
+
       <v-data-table
           :headers="headers"
           :items="diseasesList"
           :search="search"
-          @click:row="showDiseaseApproveByDecanatPage"
           :footer-props="{
             'items-per-page-text':'максимальное количество строк',
             'pageText': '{0}-{1} из {2}',
             'items-per-page-all-text' : 'Все'
           }"
       >
-
       </v-data-table>
     </v-card>
-
   </v-container>
 </template>
 
 <script>
-
-import XLSX from 'xlsx'
+import XLSX from "xlsx";
 
 export default {
-  name: "DiseaseProcessedListView",
+  name: "DiseaseActiveListView",
 
   data: () => ({
     search: '',
@@ -66,8 +63,8 @@ export default {
       { text: 'Группа', value: 'user.group.name' },
       { text: 'Направление', value: 'user.group.directionProfile.instituteDirection.shortName'},
       { text: 'Дата заболевания', value: 'dateOfDisease' },
-      { text: 'Дата выздоровления', value: 'dateOfRecovery' },
       { text: 'Диагноз', value: 'disease.name'},
+
     ],
 
     loading5: false,
@@ -76,7 +73,7 @@ export default {
 
   computed: {
     diseasesList () {
-      return this.$store.getters.processedDiseasesList
+      return this.$store.getters.activeDiseasesList
     },
 
     serverResponse () {
@@ -87,9 +84,10 @@ export default {
       return this.$store.getters.serverError
     },
 
-    processedDiseasesList() {
-      return this.$store.getters.processedDiseasesList
-    },
+  },
+
+  beforeMount() {
+    this.$store.dispatch('getProcessedActiveList');
   },
 
   methods: {
@@ -97,16 +95,8 @@ export default {
       var elt = document.getElementsByTagName("table")[0];
       var wb = XLSX.utils.table_to_book(elt, {sheet: "Sheet JS"});
 
-      return XLSX.writeFile(wb, ('больничные_ожидающие_подтверждения.' + (type || 'xlsx')));
+      return XLSX.writeFile(wb, ('болеют_сейчас.' + (type || 'xlsx')));
     },
-
-    showDiseaseApproveByDecanatPage(diseaseInfo) {
-      this.$router.push({ path: '/disease/approve/byDecanat', query: { diseaseInfo: diseaseInfo}})
-    },
-  },
-
-  beforeMount() {
-    this.$store.dispatch('getProcessedDiseasesList');
   },
 
   watch: {

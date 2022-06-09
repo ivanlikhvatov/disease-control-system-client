@@ -162,7 +162,7 @@
                   right
                   dark
               >
-                mdi-cloud-upload
+                cloud_download
               </v-icon>
             </v-btn>
           </template>

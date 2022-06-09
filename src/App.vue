@@ -255,6 +255,14 @@
       if (this.isLoggedIn) {
         this.$store.dispatch("getUserInfo")
       }
+
+      if (this.isDecanat) {
+        this.$store.dispatch('getProcessedDiseasesList');
+      }
+
+      if (this.isStudent) {
+        this.$store.dispatch('getActiveUserDisease');
+      }
     }
   }
 </script>

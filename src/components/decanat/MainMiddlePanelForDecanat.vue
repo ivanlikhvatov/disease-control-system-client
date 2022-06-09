@@ -21,7 +21,7 @@
                 <v-list-item-title class="text-h5 mb-1">
                   На данный момент болеет
                 </v-list-item-title>
-                <v-list-item-subtitle>{{user.decanatAdditionalInfo.countOfSickToday}} человек</v-list-item-subtitle>
+                <v-list-item-subtitle>{{user.additionalInfo.decanatAdditionalInfo.countOfSickToday}} человек</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-card>
@@ -32,18 +32,21 @@
           cols="12"
           md="4"
       >
-        <v-item>
+        <v-item
+
+        >
           <v-card
               class="d-flex align-center"
               height="200"
+              @click="showAllSicksPage"
           >
             <v-list-item three-line>
               <v-list-item-content>
                 <div class="mb-4">
-                  Подробная статистика
+                  Список болеющих студентов
                 </div>
                 <v-list-item-title class="text-h5 mb-1">
-                  Посмотрите все доступные <br> Вам графики
+                  Просмотр списка болеющих <br> студентов
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -66,7 +69,7 @@
                   Наиболее тяжелая ситуация
                 </div>
                 <v-list-item-title class="text-h5 mb-1">
-                  Самой эпидемеологически <br> неблагополучной <br> является направление
+                  Самым эпидемеологически <br> неблагополучным <br> является направление ИФСТ
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -86,6 +89,12 @@ export default {
       return this.$store.getters.user
     },
   },
+
+  methods: {
+    showAllSicksPage() {
+      this.$router.push({ path: '/diseases/status/active'})
+    }
+  }
 }
 </script>
 

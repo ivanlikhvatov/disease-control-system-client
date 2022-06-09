@@ -11,6 +11,7 @@ export default new Vuex.Store({
     user : {},
     activeUserDiseaseInfo: {},
     processedDiseasesList: [],
+    activeDiseasesList: [],
     serverError: {},
     serverResponse: {},
 
@@ -20,10 +21,6 @@ export default new Vuex.Store({
     groupsBySelectedProfiles: [],
 
     diseasesExistingInDirectory: [],
-
-
-    // //TODO временная сущность для показа графика на главной для деканата
-    // countDiseasesByDaysInTwoLastWeeks: {}
   },
 
   getters: {
@@ -33,9 +30,7 @@ export default new Vuex.Store({
     user: state => state.user,
     activeUserDiseaseInfo: state => state.activeUserDiseaseInfo,
     processedDiseasesList: state => state.processedDiseasesList,
-
-    // //TODO временная сущность для показа графика на главной для деканата
-    // countDiseasesByDaysInTwoLastWeeks: state => state.countDiseasesByDaysInTwoLastWeeks,
+    activeDiseasesList: state => state.activeDiseasesList,
 
     isLoggedIn: state => !!state.token,
     isStudent: state => state.user.roles && state.user.roles.indexOf("STUDENT") !== -1,
@@ -106,6 +101,14 @@ export default new Vuex.Store({
 
     get_processed_diseases_list_request(state, processedDiseasesList) {
       state.processedDiseasesList = processedDiseasesList
+
+      state.serverResponse = {
+        status: 'ok'
+      }
+    },
+
+    get_active_diseases_list_request(state, activeDiseasesList) {
+      state.activeDiseasesList = activeDiseasesList
 
       state.serverResponse = {
         status: 'ok'
@@ -300,6 +303,17 @@ export default new Vuex.Store({
             .then(resp => {
               const processedDiseasesList = resp.data;
               commit('get_processed_diseases_list_request', processedDiseasesList)
+              resolve(resp)
+            })
+      })
+    },
+
+    getProcessedActiveList({commit}){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/decanat/diseases/active', method: 'GET' })
+            .then(resp => {
+              const activeDiseasesList = resp.data;
+              commit('get_active_diseases_list_request', activeDiseasesList)
               resolve(resp)
             })
       })
