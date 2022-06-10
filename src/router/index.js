@@ -11,42 +11,31 @@ import DiseaseAdd from "@/pages/DiseaseInfoAdd";
 import DiseaseInfo from "@/pages/DiseaseInfo";
 import DiseaseInfoEdit from "@/pages/DiseaseInfoEdit";
 import DiseaseApproveBySick from "@/pages/DiseaseApproveBySick";
-import DiseaseProcessedList from "@/pages/DiseaseProcessedList";
 import DiseaseApproveByDecanat from "@/pages/DiseaseApproveByDecanat";
-import ChooseStatistic from "@/pages/ChooseStatistic";
-import DiseaseActiveList from "@/pages/DiseaseActiveList";
+import ChooseGraphics from "@/pages/ChooseGraphics";
+import ChooseDiseasesTable from "@/pages/ChooseDiseasesTable";
 
 Vue.use(VueRouter)
 
 const routes = [
 
   {
-    path: '/diseases/status/active',
-    name: 'diseaseActiveList',
-    component: DiseaseActiveList,
-    meta: {
-      requiresAuth: true
-    },
-    beforeEnter: checkDecanatPermission,
-  },
-
-  {
-    path: '/diseases/statistic/choose',
-    name: 'chooseStatistic',
-    component: ChooseStatistic,
+    path: '/diseases/table/choose',
+    name: 'chooseTableDiseases',
+    component: ChooseDiseasesTable,
     meta: {
       requiresAuth: true
     },
     beforeEnter: checkWatchStatisticPermission,
   },
   {
-    path: '/diseases/status/processed',
-    name: 'diseaseProcessedList',
-    component: DiseaseProcessedList,
+    path: '/diseases/graphics/choose',
+    name: 'chooseGraphics',
+    component: ChooseGraphics,
     meta: {
       requiresAuth: true
     },
-    beforeEnter: checkDecanatPermission,
+    beforeEnter: checkWatchStatisticPermission,
   },
   {
     path: '/disease/approve/byDecanat',

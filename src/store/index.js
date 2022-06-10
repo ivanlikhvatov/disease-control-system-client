@@ -308,7 +308,7 @@ export default new Vuex.Store({
       })
     },
 
-    getProcessedActiveList({commit}){
+    getActiveDiseasesList({commit}){
       return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/decanat/diseases/active', method: 'GET' })
             .then(resp => {

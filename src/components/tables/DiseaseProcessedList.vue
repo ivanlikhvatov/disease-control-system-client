@@ -1,21 +1,7 @@
 <template>
   <v-container>
     <v-card>
-
       <v-card-title>
-        <v-btn
-            :loading="loading5"
-            :disabled="loading5"
-            small
-            color="blue-grey"
-            class="ma-2 white--text"
-            fab
-            @click="[loader = 'loading5', exportTable('xlsx')]"
-        >
-          <v-icon dark>
-            cloud_upload
-          </v-icon>
-        </v-btn>
         Больничные ожидающие подтверждения
         <v-spacer></v-spacer>
         <v-text-field
@@ -36,6 +22,7 @@
             'pageText': '{0}-{1} из {2}',
             'items-per-page-all-text' : 'Все'
           }"
+          no-data-text="Все больничные обработаны"
       >
 
       </v-data-table>
@@ -45,8 +32,6 @@
 </template>
 
 <script>
-
-import XLSX from 'xlsx'
 
 export default {
   name: "DiseaseProcessedListView",
@@ -60,8 +45,8 @@ export default {
         sortable: false,
         value: 'user.login',
       },
-      { text: 'Имя', value: 'user.firstname' },
       { text: 'Фамилия', value: 'user.lastname' },
+      { text: 'Имя', value: 'user.firstname' },
       { text: 'Отчество', value: 'user.patronymic' },
       { text: 'Группа', value: 'user.group.name' },
       { text: 'Направление', value: 'user.group.directionProfile.instituteDirection.shortName'},
@@ -70,8 +55,6 @@ export default {
       { text: 'Диагноз', value: 'disease.name'},
     ],
 
-    loading5: false,
-    loader: null,
   }),
 
   computed: {
@@ -93,13 +76,6 @@ export default {
   },
 
   methods: {
-    exportTable(type) {
-      var elt = document.getElementsByTagName("table")[0];
-      var wb = XLSX.utils.table_to_book(elt, {sheet: "Sheet JS"});
-
-      return XLSX.writeFile(wb, ('больничные_ожидающие_подтверждения.' + (type || 'xlsx')));
-    },
-
     showDiseaseApproveByDecanatPage(diseaseInfo) {
       this.$router.push({ path: '/disease/approve/byDecanat', query: { diseaseInfo: diseaseInfo}})
     },
@@ -107,17 +83,6 @@ export default {
 
   beforeMount() {
     this.$store.dispatch('getProcessedDiseasesList');
-  },
-
-  watch: {
-    loader () {
-      const l = this.loader
-      this[l] = !this[l]
-
-      setTimeout(() => (this[l] = false), 3000)
-
-      this.loader = null
-    },
   },
 }
 </script>

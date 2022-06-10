@@ -1,21 +1,7 @@
 <template>
   <v-container>
     <v-card>
-
       <v-card-title>
-        <v-btn
-            :loading="loading5"
-            :disabled="loading5"
-            small
-            color="blue-grey"
-            class="ma-2 white--text"
-            fab
-            @click="[loader = 'loading5', exportTable('xlsx')]"
-        >
-          <v-icon dark>
-            cloud_upload
-          </v-icon>
-        </v-btn>
         Болеют сейчас
         <v-spacer></v-spacer>
         <v-text-field
@@ -36,6 +22,7 @@
             'pageText': '{0}-{1} из {2}',
             'items-per-page-all-text' : 'Все'
           }"
+          no-data-text="Больных нет"
       >
       </v-data-table>
     </v-card>
@@ -43,7 +30,6 @@
 </template>
 
 <script>
-import XLSX from "xlsx";
 
 export default {
   name: "DiseaseActiveListView",
@@ -57,8 +43,8 @@ export default {
         sortable: false,
         value: 'user.login',
       },
-      { text: 'Имя', value: 'user.firstname' },
       { text: 'Фамилия', value: 'user.lastname' },
+      { text: 'Имя', value: 'user.firstname' },
       { text: 'Отчество', value: 'user.patronymic' },
       { text: 'Группа', value: 'user.group.name' },
       { text: 'Направление', value: 'user.group.directionProfile.instituteDirection.shortName'},
@@ -67,8 +53,6 @@ export default {
 
     ],
 
-    loading5: false,
-    loader: null,
   }),
 
   computed: {
@@ -87,27 +71,7 @@ export default {
   },
 
   beforeMount() {
-    this.$store.dispatch('getProcessedActiveList');
-  },
-
-  methods: {
-    exportTable(type) {
-      var elt = document.getElementsByTagName("table")[0];
-      var wb = XLSX.utils.table_to_book(elt, {sheet: "Sheet JS"});
-
-      return XLSX.writeFile(wb, ('болеют_сейчас.' + (type || 'xlsx')));
-    },
-  },
-
-  watch: {
-    loader () {
-      const l = this.loader
-      this[l] = !this[l]
-
-      setTimeout(() => (this[l] = false), 3000)
-
-      this.loader = null
-    },
+    this.$store.dispatch('getActiveDiseasesList');
   },
 }
 </script>

@@ -111,22 +111,22 @@
             </v-list-item>
 
             <v-list-item
-                v-if="isDecanat"
-                @click="showProcessedDiseasesPage"
+                v-if="isAdmin || isTeacher || isCurator || isCuratorSupervising || isRectorat || isDecanat"
+                @click="showDiseasesListsPage"
             >
               <v-list-item-icon>
                 <v-icon
-                    color="blue darken-2"
+                    color="success"
                 >
-                  approval
+                  receipt_long
                 </v-icon>
               </v-list-item-icon>
-              <v-list-item-title>Больничные</v-list-item-title>
+              <v-list-item-title>Статистика</v-list-item-title>
             </v-list-item>
 
             <v-list-item
                 v-if="isAdmin || isTeacher || isCurator || isCuratorSupervising || isRectorat || isDecanat"
-                @click="showChooseStatisticPage"
+                @click="showChooseGraphicPage"
             >
               <v-list-item-icon>
                 <v-icon
@@ -135,7 +135,7 @@
                   query_stats
                 </v-icon>
               </v-list-item-icon>
-              <v-list-item-title>Статистика</v-list-item-title>
+              <v-list-item-title>Графики</v-list-item-title>
             </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -208,8 +208,12 @@
         this.$router.push('/diseases/status/processed')
       },
 
-      showChooseStatisticPage: function () {
-        this.$router.push('/diseases/statistic/choose')
+      showDiseasesListsPage: function () {
+        this.$router.push('/diseases/table/choose')
+      },
+
+      showChooseGraphicPage: function () {
+        this.$router.push('/diseases/graphics/choose')
       },
 
       logout: function () {

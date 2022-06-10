@@ -319,13 +319,14 @@ export default {
     //   return this.refundCauseErrors.length === 0;
     // },
 
+    //todo попробовать сделать так, чтоб возвращались в главное меню
     showDiseaseProcessedList() {
-      this.$router.push({ path: '/diseases/status/processed'})
+      this.$router.push({ path: '/diseases/table/choose'})
     },
 
     approveDisease() {
       this.$store.dispatch('approveDiseaseByDecanat', this.diseaseInfo.id)
-          .then(() => this.$router.push('/diseases/status/processed'))
+          .then(() => this.$router.push('/diseases/table/choose'))
           .catch(err => console.log(err))
     },
 
@@ -342,7 +343,7 @@ export default {
       }
 
       this.$store.dispatch('rejectDisease', data)
-          .then(() => this.$router.push('/diseases/status/processed'))
+          .then(() => this.$router.push('/diseases/table/choose'))
           .catch(err => console.log(err))
     },
 
@@ -359,7 +360,7 @@ export default {
       }
 
       this.$store.dispatch('refundDiseaseToUser', data)
-          .then(() => this.$router.push('/diseases/status/processed'))
+          .then(() => this.$router.push('/diseases/table/choose'))
           .catch(err => console.log(err))
     },
 
