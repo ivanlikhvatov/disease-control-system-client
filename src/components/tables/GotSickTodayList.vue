@@ -1,6 +1,19 @@
 <template>
   <v-container>
-    <v-card>
+    <v-card class="mt-5">
+      <v-btn
+          fab
+          top
+          right
+          absolute
+          color="primary"
+          :loading="loading5"
+          :disabled="loading5"
+          @click="[loader = 'loading5', exportTable('xlsx')]"
+      >
+        <v-icon>mdi-cloud-upload</v-icon>
+      </v-btn>
+
       <v-card-title>
         Заболели сегодня
         <v-spacer></v-spacer>
@@ -14,6 +27,7 @@
       </v-card-title>
 
       <v-data-table
+          id="gotSickToday"
           :headers="headers"
           :items="gotSickTodayList"
           :search="search"
@@ -31,8 +45,11 @@
 </template>
 
 <script>
+import XLSX from "xlsx";
+import moment from "moment";
+
 export default {
-  name: "GotSickTodayList",
+  name: "GotSickTodayListView",
 
   data: () => ({
     search: '',
@@ -46,12 +63,17 @@ export default {
       { text: 'Фамилия', value: 'user.lastname' },
       { text: 'Имя', value: 'user.firstname' },
       { text: 'Отчество', value: 'user.patronymic' },
+      { text: 'Телефон', value: 'user.phoneNumber' },
       { text: 'Группа', value: 'user.group.name' },
       { text: 'Направление', value: 'user.group.directionProfile.instituteDirection.shortName'},
+      { text: 'Кафедра', value: 'user.group.directionProfile.instituteDirection.department.shortName'},
       { text: 'Дата заболевания', value: 'dateOfDisease' },
       { text: 'Диагноз', value: 'disease.name'},
 
     ],
+
+    loading5: false,
+    loader: null,
 
   }),
 
@@ -60,10 +82,11 @@ export default {
       var activeDiseases = this.$store.getters.activeDiseasesList
 
       const gotSickToday = [];
-      const dateNow = new Date(Date.now()).toISOString().split('T')[0]
+
+      const dateNow = moment().format('YYYY-MM-DD');
+
 
       for (var i = 0; i < activeDiseases.length; i++) {
-
         if (activeDiseases[i].dateOfDisease === dateNow) {
           gotSickToday.push(activeDiseases[i]);
         }
@@ -80,6 +103,30 @@ export default {
       return this.$store.getters.serverError
     },
 
+  },
+
+  methods: {
+    exportTable(type) {
+      var dataTableVuetifyElem = document.getElementById("gotSickToday");
+      var elt = dataTableVuetifyElem.getElementsByTagName("table")[0];
+
+      var wb = XLSX.utils.table_to_book(elt, {sheet: "Sheet JS"});
+
+      let dateNow = moment().format('YYYY-MM-DD');
+
+      return XLSX.writeFile(wb, ('Заболели_' + dateNow + '.' + (type || 'xlsx')));
+    },
+  },
+
+  watch: {
+    loader () {
+      const l = this.loader
+      this[l] = !this[l]
+
+      setTimeout(() => (this[l] = false), 3000)
+
+      this.loader = null
+    },
   },
 
   beforeMount() {

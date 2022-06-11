@@ -11,46 +11,47 @@
         >
           <v-item>
             <v-card
-                class="d-flex align-center"
-                height="200"
+                class="mx-auto"
+                color="red darken-1"
+                dark
+                max-width="400"
             >
-              <v-list-item three-line>
-                <v-list-item-content>
-                  <div class="mb-4">
-                    По состоянию на {{new Date(Date.now()).toLocaleDateString()}}
-                  </div>
-                  <v-list-item-title class="text-h5 mb-1">
-                    На данный момент болеет
-                  </v-list-item-title>
-                  <v-list-item-subtitle>{{user.additionalInfo.decanatAdditionalInfo.countOfSickToday}} человек</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-card>
-          </v-item>
-        </v-col>
+              <v-card-title>
+                <v-icon
+                    large
+                    left
+                >
+                  sick
+                </v-icon>
+                <span class="text-h6">На данный момент болеет</span>
+              </v-card-title>
 
-        <v-col
-            cols="12"
-            md="4"
-        >
-          <v-item
+              <v-card-text class="text-h5 red">
+                <v-list-item three-line>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-h2 font-weight-bold mb-1">
+                      {{user.additionalInfo.decanatAdditionalInfo.countOfSickNow}}
+                    </v-list-item-title>
 
-          >
-            <v-card
-                class="d-flex align-center"
-                height="200"
-                @click="showActiveSicksPage"
-            >
-              <v-list-item three-line>
-                <v-list-item-content>
-                  <div class="mb-4">
-                    Список болеющих студентов
-                  </div>
-                  <v-list-item-title class="text-h5 mb-1">
-                    Просмотр списка <br> болеющих студентов
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+                    <div class="mb-4 text-h6">
+                      Болеет во всем институте
+                    </div>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-card-text>
+
+              <v-card-actions class="red">
+                <v-spacer></v-spacer>
+                <v-btn
+                    icon
+                    large
+                    @click="showActiveSicksPage"
+                >
+                  <v-icon>
+                    arrow_forward
+                  </v-icon>
+                </v-btn>
+              </v-card-actions>
             </v-card>
           </v-item>
         </v-col>
@@ -61,19 +62,101 @@
         >
           <v-item>
             <v-card
-                class="d-flex align-center"
-                height="200"
+                class="mx-auto"
+                color="primary darken-1"
+                dark
+                max-width="400"
             >
-              <v-list-item three-line>
-                <v-list-item-content>
-                  <div class="mb-4">
-                    Наиболее тяжелая ситуация
-                  </div>
-                  <v-list-item-title class="text-h5 mb-1">
-                    Самым эпидемеологически <br> неблагополучным <br> является направление ИФСТ
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+              <v-card-title>
+                <v-icon
+                    large
+                    left
+                >
+                  today
+                </v-icon>
+                <span class="text-h6">Статистика за сегодня</span>
+              </v-card-title>
+
+              <v-card-text class="text-h5 primary">
+                <v-list-item three-line>
+                  <v-list-item-content>
+
+                    <v-list-item-title class="text-h2 font-weight-bold mb-1">
+                      {{user.additionalInfo.decanatAdditionalInfo.countOfSickToday}} / {{user.additionalInfo.decanatAdditionalInfo.countOfRecoverToday}}
+                    </v-list-item-title>
+                    <div class="mb-4 text-h6">
+                      Заболело / Выздоровело
+                    </div>
+
+                  </v-list-item-content>
+                </v-list-item>
+              </v-card-text>
+
+              <v-card-actions class="primary">
+                <v-spacer></v-spacer>
+                <v-btn
+                    icon
+                    large
+                    @click="showActiveSicksPage"
+                >
+                  <v-icon>
+                    arrow_forward
+                  </v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-item>
+        </v-col>
+
+        <v-col
+            cols="12"
+            md="4"
+        >
+          <v-item>
+            <v-card
+                class="mx-auto"
+                color="orange darken-1"
+                dark
+                max-width="400"
+            >
+              <v-card-title>
+                <v-icon
+                    large
+                    left
+                >
+                  warning_amber
+                </v-icon>
+                <span class="text-h6">Наиболее тяжелая ситуация</span>
+              </v-card-title>
+
+              <v-card-text class="text-h5 orange">
+                <v-list-item three-line>
+                  <v-list-item-content>
+
+                    <v-list-item-title class="text-h2 font-weight-bold mb-1">
+                      {{mostCountOfSickDepartment.countOfSick}}
+                    </v-list-item-title>
+
+                    <div class="mb-4 text-h6">
+                      Болеет на кафедре {{mostCountOfSickDepartment.departmentName}}
+                    </div>
+
+                  </v-list-item-content>
+                </v-list-item>
+              </v-card-text>
+
+              <v-card-actions class="orange">
+                <v-spacer></v-spacer>
+                <v-btn
+                    icon
+                    large
+                    @click="showActiveSicksPage"
+                >
+                  <v-icon>
+                    arrow_forward
+                  </v-icon>
+                </v-btn>
+              </v-card-actions>
             </v-card>
           </v-item>
         </v-col>
@@ -91,6 +174,25 @@ export default {
     user() {
       return this.$store.getters.user
     },
+
+    mostCountOfSickDepartment() {
+      var diseasesByDepartments = this.$store.getters.user.additionalInfo.decanatAdditionalInfo.departmentCountOfSicks
+
+      if (diseasesByDepartments.length === 0) {
+        return null
+      }
+
+      var mostCountOfSickDepartment = diseasesByDepartments[0];
+
+      for (var i = 0; i < diseasesByDepartments.length; i++) {
+
+        if (diseasesByDepartments[i].countOfSick > mostCountOfSickDepartment.countOfSick) {
+          mostCountOfSickDepartment = diseasesByDepartments[i]
+        }
+      }
+
+      return mostCountOfSickDepartment
+    }
   },
 
   methods: {

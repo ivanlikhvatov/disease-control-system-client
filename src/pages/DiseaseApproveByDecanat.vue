@@ -314,11 +314,6 @@ export default {
 
   methods: {
 
-    // isValid() {
-    //   this.$v.$touch()
-    //   return this.refundCauseErrors.length === 0;
-    // },
-
     //todo попробовать сделать так, чтоб возвращались в главное меню
     showDiseaseProcessedList() {
       this.$router.push({ path: '/diseases/table/choose'})

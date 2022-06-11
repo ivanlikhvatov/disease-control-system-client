@@ -433,18 +433,6 @@ export default {
     isValid() {
       this.$v.$touch()
 
-      console.log("this.studentNumberErrors.length: " + this.studentNumberErrors.length)
-      console.log("this.genderErrors.length: " + this.genderErrors.length)
-      console.log("this.firstnameErrors.length: " + this.firstnameErrors.length)
-      console.log("this.lastnameErrors.length: " + this.lastnameErrors.length)
-      console.log("this.patronymicErrors.length: " + this.patronymicErrors.length)
-      console.log("this.loginErrors.length: " + this.loginErrors.length)
-      console.log("this.roleErrors.length: " + this.roleErrors.length)
-      console.log("this.institutesErrors.length: " + this.institutesErrors.length)
-      console.log("this.directionErrors.length: " + this.directionErrors.length)
-      console.log("this.profileErrors.length: " + this.profileErrors.length)
-      console.log("this.groupErrors.length: " + this.groupErrors.length)
-
       return this.studentNumberErrors.length === 0
           && this.genderErrors.length === 0
           && this.firstnameErrors.length === 0

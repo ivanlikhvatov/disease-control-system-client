@@ -111,7 +111,7 @@
             </v-list-item>
 
             <v-list-item
-                v-if="isAdmin || isTeacher || isCurator || isCuratorSupervising || isRectorat || isDecanat"
+                v-if="isTeacher || isCurator || isCuratorSupervising || isRectorat || isDecanat"
                 @click="showDiseasesListsPage"
             >
               <v-list-item-icon>
@@ -125,7 +125,7 @@
             </v-list-item>
 
             <v-list-item
-                v-if="isAdmin || isTeacher || isCurator || isCuratorSupervising || isRectorat || isDecanat"
+                v-if="isTeacher || isCurator || isCuratorSupervising || isRectorat || isDecanat"
                 @click="showChooseGraphicPage"
             >
               <v-list-item-icon>

@@ -66,6 +66,9 @@ export default new Vuex.Store({
       state.token = ''
       state.serverError = {}
       state.user = {}
+      state.activeUserDiseaseInfo = {}
+      state.processedDiseasesList = []
+      state.activeDiseasesList = []
     },
     clearServerError(state){
       state.serverError = {}

@@ -15,7 +15,7 @@
       </v-btn>
 
       <v-card-title>
-        Больничные ожидающие подтверждения
+        Заболели сегодня
         <v-spacer></v-spacer>
         <v-text-field
             v-model="search"
@@ -25,33 +25,31 @@
             hide-details
         ></v-text-field>
       </v-card-title>
+
       <v-data-table
-          id="processedDiseases"
+          id="recoverToday"
           :headers="headers"
-          :items="diseasesList"
+          :items="gotRecoverTodayList"
           :search="search"
-          @click:row="showDiseaseApproveByDecanatPage"
           :footer-props="{
             'items-per-page-text':'максимальное количество строк',
             'pageText': '{0}-{1} из {2}',
             'items-per-page-all-text' : 'Все'
           }"
-          no-data-text="Все больничные обработаны"
+          no-data-text="Выздоровевших нет"
+          tabindex="n"
       >
-
       </v-data-table>
     </v-card>
-
   </v-container>
 </template>
 
 <script>
-
 import XLSX from "xlsx";
 import moment from "moment";
 
 export default {
-  name: "DiseaseProcessedListView",
+  name: "RecoverTodayListView",
 
   data: () => ({
     search: '',
@@ -72,6 +70,7 @@ export default {
       { text: 'Дата заболевания', value: 'dateOfDisease' },
       { text: 'Дата выздоровления', value: 'dateOfRecovery' },
       { text: 'Диагноз', value: 'disease.name'},
+
     ],
 
     loading5: false,
@@ -80,8 +79,20 @@ export default {
   }),
 
   computed: {
-    diseasesList () {
-      return this.$store.getters.processedDiseasesList
+    gotRecoverTodayList () {
+      var activeDiseases = this.$store.getters.activeDiseasesList
+
+      const gotSickToday = [];
+      const dateNow = moment().format('YYYY-MM-DD');
+
+      for (var i = 0; i < activeDiseases.length; i++) {
+
+        if (activeDiseases[i].dateOfRecovery === dateNow) {
+          gotSickToday.push(activeDiseases[i]);
+        }
+      }
+
+      return gotSickToday;
     },
 
     serverResponse () {
@@ -91,22 +102,19 @@ export default {
     serverError () {
       return this.$store.getters.serverError
     },
+
   },
 
   methods: {
-    showDiseaseApproveByDecanatPage(diseaseInfo) {
-      this.$router.push({ path: '/disease/approve/byDecanat', query: { diseaseInfo: diseaseInfo}})
-    },
-
     exportTable(type) {
-      var dataTableVuetifyElem = document.getElementById("processedDiseases");
+      var dataTableVuetifyElem = document.getElementById("recoverToday");
       var elt = dataTableVuetifyElem.getElementsByTagName("table")[0];
 
       var wb = XLSX.utils.table_to_book(elt, {sheet: "Sheet JS"});
 
       let dateNow = moment().format('YYYY-MM-DD');
 
-      return XLSX.writeFile(wb, ('Список_заболеваний_подлежащих_проверке_' + dateNow + '.' + (type || 'xlsx')));
+      return XLSX.writeFile(wb, ('Выздоровели_' + dateNow + '.' + (type || 'xlsx')));
     },
   },
 
@@ -122,7 +130,7 @@ export default {
   },
 
   beforeMount() {
-    this.$store.dispatch('getProcessedDiseasesList');
+    this.$store.dispatch('getActiveDiseasesList');
   },
 }
 </script>
