@@ -12,6 +12,7 @@ export default new Vuex.Store({
     activeUserDiseaseInfo: {},
     processedDiseasesList: [],
     activeDiseasesList: [],
+    allDiseasesList: [],
     serverError: {},
     serverResponse: {},
 
@@ -31,6 +32,7 @@ export default new Vuex.Store({
     activeUserDiseaseInfo: state => state.activeUserDiseaseInfo,
     processedDiseasesList: state => state.processedDiseasesList,
     activeDiseasesList: state => state.activeDiseasesList,
+    allDiseasesList: state => state.allDiseasesList,
 
     isLoggedIn: state => !!state.token,
     isStudent: state => state.user.roles && state.user.roles.indexOf("STUDENT") !== -1,
@@ -69,6 +71,7 @@ export default new Vuex.Store({
       state.activeUserDiseaseInfo = {}
       state.processedDiseasesList = []
       state.activeDiseasesList = []
+      state.allDiseasesList = []
     },
     clearServerError(state){
       state.serverError = {}
@@ -110,8 +113,16 @@ export default new Vuex.Store({
       }
     },
 
-    get_active_diseases_list_request(state, activeDiseasesList) {
+    get_active_diseases_list_by_decanat_request(state, activeDiseasesList) {
       state.activeDiseasesList = activeDiseasesList
+
+      state.serverResponse = {
+        status: 'ok'
+      }
+    },
+
+    get_all_diseases_list_by_decanat_request(state, allDiseasesList) {
+      state.allDiseasesList = allDiseasesList
 
       state.serverResponse = {
         status: 'ok'
@@ -311,12 +322,23 @@ export default new Vuex.Store({
       })
     },
 
-    getActiveDiseasesList({commit}){
+    getActiveDiseasesListByDecanat({commit}){
       return new Promise((resolve) => {
         axios({url: 'http://localhost:9000/api/v1/decanat/diseases/active', method: 'GET' })
             .then(resp => {
               const activeDiseasesList = resp.data;
-              commit('get_active_diseases_list_request', activeDiseasesList)
+              commit('get_active_diseases_list_by_decanat_request', activeDiseasesList)
+              resolve(resp)
+            })
+      })
+    },
+
+    getAllDiseasesByDecanatList({commit}){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/decanat/diseases/all', method: 'GET' })
+            .then(resp => {
+              const activeDiseasesList = resp.data;
+              commit('get_all_diseases_list_by_decanat_request', activeDiseasesList)
               resolve(resp)
             })
       })

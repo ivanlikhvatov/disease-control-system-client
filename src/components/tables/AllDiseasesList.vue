@@ -129,6 +129,26 @@
 
           </v-list>
 
+          <v-card-actions v-if="detailedInfo.scannedCertificateInBase64">
+            <v-btn
+                :download=detailedInfo.user.login
+                :href=detailedInfo.scannedCertificateInBase64
+                :loading="loading4"
+                :disabled="loading4"
+                color="blue-grey"
+                class="ma-2 white--text"
+                @click="loader = 'loading4'"
+            >
+              Скачать справку
+              <v-icon
+                  right
+                  dark
+              >
+                mdi-cloud-upload
+              </v-icon>
+            </v-btn>
+          </v-card-actions>
+
         </v-card>
       </v-dialog>
 
@@ -146,7 +166,7 @@
       </v-btn>
 
       <v-card-title>
-        Заболели сегодня
+        Заболевания за все время
         <v-spacer></v-spacer>
         <v-text-field
             v-model="search"
@@ -158,9 +178,9 @@
       </v-card-title>
 
       <v-data-table
-          id="gotSickToday"
+          id="allDisease"
           :headers="headers"
-          :items="gotSickTodayList"
+          :items="diseasesList"
           :search="search"
           @click:row="showMoreInformation"
           :footer-props="{
@@ -168,8 +188,7 @@
             'pageText': '{0}-{1} из {2}',
             'items-per-page-all-text' : 'Все'
           }"
-          no-data-text="Больных нет"
-          tabindex="n"
+          no-data-text="Информации нет"
       >
       </v-data-table>
     </v-card>
@@ -181,7 +200,7 @@ import XLSX from "xlsx";
 import moment from "moment";
 
 export default {
-  name: "GotSickTodayListView",
+  name: "AllDiseasesList",
 
   data: () => ({
     search: '',
@@ -195,38 +214,24 @@ export default {
       { text: 'Фамилия', value: 'user.lastname' },
       { text: 'Имя', value: 'user.firstname' },
       { text: 'Отчество', value: 'user.patronymic' },
-      { text: 'Телефон', value: 'user.phoneNumber' },
       { text: 'Группа', value: 'user.group.name' },
-      { text: 'Направление', value: 'user.group.directionProfile.instituteDirection.shortName'},
       { text: 'Кафедра', value: 'user.group.directionProfile.instituteDirection.department.shortName'},
       { text: 'Дата заболевания', value: 'dateOfDisease' },
+      { text: 'Дата выздоровления', value: 'dateOfRecovery' },
       { text: 'Диагноз', value: 'disease.name'},
-
+      { text: 'Статус', value: 'status.description'},
     ],
 
     loading5: false,
+    loading4: false,
     loader: null,
     detailedInfo: {},
-    isDetailedInfoPanel: false,
-
+    isDetailedInfoPanel: false
   }),
 
   computed: {
-    gotSickTodayList () {
-      var activeDiseases = this.$store.getters.activeDiseasesList
-
-      const gotSickToday = [];
-
-      const dateNow = moment().format('YYYY-MM-DD');
-
-
-      for (var i = 0; i < activeDiseases.length; i++) {
-        if (activeDiseases[i].dateOfDisease === dateNow) {
-          gotSickToday.push(activeDiseases[i]);
-        }
-      }
-
-      return gotSickToday;
+    diseasesList () {
+      return this.$store.getters.allDiseasesList
     },
 
     serverResponse () {
@@ -241,20 +246,21 @@ export default {
 
   methods: {
     exportTable(type) {
-      var dataTableVuetifyElem = document.getElementById("gotSickToday");
+
+      var dataTableVuetifyElem = document.getElementById("allDisease");
       var elt = dataTableVuetifyElem.getElementsByTagName("table")[0];
 
       var wb = XLSX.utils.table_to_book(elt, {sheet: "Sheet JS"});
 
       let dateNow = moment().format('YYYY-MM-DD');
 
-      return XLSX.writeFile(wb, ('Заболели_' + dateNow + '.' + (type || 'xlsx')));
+      return XLSX.writeFile(wb, ('Все_заболевания_' + dateNow + '.' + (type || 'xlsx')));
     },
 
     showMoreInformation(diseaseInfo) {
       this.detailedInfo = diseaseInfo
       this.isDetailedInfoPanel = true
-    },
+    }
   },
 
   watch: {
@@ -269,7 +275,7 @@ export default {
   },
 
   beforeMount() {
-    this.$store.dispatch('getActiveDiseasesListByDecanat');
+    this.$store.dispatch('getAllDiseasesByDecanatList');
   },
 }
 </script>

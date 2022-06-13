@@ -5,9 +5,11 @@
         max-width="500"
         elevation="4"
     >
-      <v-card-title>
-        <p> {{diseaseInfo.user.lastname}} {{diseaseInfo.user.firstname}} {{diseaseInfo.user.patronymic}}</p>
-      </v-card-title>
+
+      <v-toolbar
+          color="primary"
+          dark
+      >{{diseaseInfo.user.lastname}} {{diseaseInfo.user.firstname}} {{diseaseInfo.user.patronymic}}</v-toolbar>
 
       <v-card-title>
         Номер студенческого
@@ -39,6 +41,14 @@
 
       <v-card-subtitle class="text--primary">
         <div>{{diseaseInfo.user.group.name}}</div>
+      </v-card-subtitle>
+
+      <v-card-title>
+        Кафедра
+      </v-card-title>
+
+      <v-card-subtitle class="text--primary">
+        <div>{{diseaseInfo.user.group.directionProfile.instituteDirection.department.shortName}}</div>
       </v-card-subtitle>
 
       <div v-if="diseaseInfo.disease">

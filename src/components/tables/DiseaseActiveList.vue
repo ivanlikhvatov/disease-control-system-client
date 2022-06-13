@@ -1,6 +1,137 @@
 <template>
   <v-container>
     <v-card class="mt-5">
+
+      <v-dialog
+          v-model="isDetailedInfoPanel"
+          max-width="550"
+      >
+        <v-card
+            v-if="detailedInfo.user"
+        >
+          <v-toolbar
+              color="primary"
+              dark
+          >Подробная информация</v-toolbar>
+
+          <v-list two-line>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.user.lastname}} {{detailedInfo.user.firstname}} {{detailedInfo.user.patronymic}}</v-list-item-title>
+                <v-list-item-subtitle>ФИО</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.user.login}}</v-list-item-title>
+                <v-list-item-subtitle>Номер зачетки</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>+7{{detailedInfo.user.phoneNumber}}</v-list-item-title>
+                <v-list-item-subtitle>Номер Телефона</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.user.email}}</v-list-item-title>
+                <v-list-item-subtitle>E-mail</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.user.group.name}}</v-list-item-title>
+                <v-list-item-subtitle>Группа обученния</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.user.group.directionProfile.instituteDirection.shortName}}</v-list-item-title>
+                <v-list-item-subtitle>Направление обучения</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.user.group.directionProfile.instituteDirection.department.shortName}}</v-list-item-title>
+                <v-list-item-subtitle>Кафедра</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item v-if="detailedInfo.disease">
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.disease.name}}</v-list-item-title>
+                <v-list-item-subtitle>Заболевание</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item v-else>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.otherDiseaseInformation}}</v-list-item-title>
+                <v-list-item-subtitle>Описание болезни</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.dateOfDisease}}</v-list-item-title>
+                <v-list-item-subtitle>Дата начала болезни</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item v-if="detailedInfo.dateOfRecovery">
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.dateOfRecovery}}</v-list-item-title>
+                <v-list-item-subtitle>Дата выздоровления</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.status.description}}</v-list-item-title>
+                <v-list-item-subtitle>Статус заболевания</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item v-if="detailedInfo.approveType">
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.approveType.description}}</v-list-item-title>
+                <v-list-item-subtitle>Тип подтверждения</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item v-if="detailedInfo.approveAuthor">
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.approveAuthor.lastname}} {{detailedInfo.approveAuthor.firstname}} {{detailedInfo.approveAuthor.patronymic}}</v-list-item-title>
+                <v-list-item-subtitle>Кем подтверждено</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item v-if="detailedInfo.rejectAuthor">
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.rejectAuthor.lastname}} {{detailedInfo.rejectAuthor.firstname}} {{detailedInfo.rejectAuthor.patronymic}}</v-list-item-title>
+                <v-list-item-subtitle>Кем отклонено</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item v-if="detailedInfo.rejectCause">
+              <v-list-item-content>
+                <p>{{detailedInfo.rejectCause}}</p>
+                <v-list-item-subtitle>Причина отклонения</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+          </v-list>
+
+        </v-card>
+      </v-dialog>
+
       <v-btn
           fab
           top
@@ -31,6 +162,7 @@
           :headers="headers"
           :items="diseasesList"
           :search="search"
+          @click:row="showMoreInformation"
           :footer-props="{
             'items-per-page-text':'максимальное количество строк',
             'pageText': '{0}-{1} из {2}',
@@ -74,6 +206,8 @@ export default {
 
     loading5: false,
     loader: null,
+    detailedInfo: {},
+    isDetailedInfoPanel: false
 
   }),
 
@@ -104,6 +238,11 @@ export default {
 
       return XLSX.writeFile(wb, ('Болеют_на_' + dateNow + '.' + (type || 'xlsx')));
     },
+
+    showMoreInformation(diseaseInfo) {
+      this.detailedInfo = diseaseInfo
+      this.isDetailedInfoPanel = true
+    }
   },
 
   watch: {
@@ -118,7 +257,7 @@ export default {
   },
 
   beforeMount() {
-    this.$store.dispatch('getActiveDiseasesList');
+    this.$store.dispatch('getActiveDiseasesListByDecanat');
   },
 }
 </script>
