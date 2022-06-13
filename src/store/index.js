@@ -13,6 +13,9 @@ export default new Vuex.Store({
     processedDiseasesList: [],
     activeDiseasesList: [],
     allDiseasesList: [],
+
+    groupGraphicsInfo: {},
+
     serverError: {},
     serverResponse: {},
 
@@ -33,6 +36,8 @@ export default new Vuex.Store({
     processedDiseasesList: state => state.processedDiseasesList,
     activeDiseasesList: state => state.activeDiseasesList,
     allDiseasesList: state => state.allDiseasesList,
+
+    groupGraphicsInfo: state => state.groupGraphicsInfo,
 
     isLoggedIn: state => !!state.token,
     isStudent: state => state.user.roles && state.user.roles.indexOf("STUDENT") !== -1,
@@ -135,6 +140,10 @@ export default new Vuex.Store({
 
     get_diseases_existing_in_directory_request(state, diseases) {
       state.diseasesExistingInDirectory = diseases
+    },
+
+    get_group_graphics_info_request(state, groupGraphicsInfo) {
+      state.groupGraphicsInfo = groupGraphicsInfo
     }
   },
 
@@ -357,7 +366,7 @@ export default new Vuex.Store({
 
     getDiseasesExistingInDirectory({commit}){
       return new Promise((resolve) => {
-        axios({url: 'http://localhost:9000/api/v1/student/diseases', method: 'GET' }) //TODO поправить path: student тут лишнее
+        axios({url: 'http://localhost:9000/api/v1/diseases', method: 'GET' })
             .then(resp => {
               const institutes = resp.data;
               commit('get_diseases_existing_in_directory_request', institutes)
@@ -365,6 +374,20 @@ export default new Vuex.Store({
             })
       })
     },
+
+
+
+    getGroupGraphicData({commit}, data){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/graphics/byGroups', data: data, method: 'POST' })
+            .then(resp => {
+              const groupGraphicsInfo = resp.data;
+              commit('get_group_graphics_info_request', groupGraphicsInfo)
+              resolve(resp)
+            })
+      })
+    },
+
 
     logout({commit}){
       //TODO послать запрос logout на сервер?

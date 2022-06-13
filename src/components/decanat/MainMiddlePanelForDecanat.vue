@@ -150,7 +150,7 @@
                 <v-btn
                     icon
                     large
-                    @click="showActiveSicksPage"
+                    @click="showChooseGraphicsPage"
                 >
                   <v-icon>
                     arrow_forward
@@ -198,6 +198,10 @@ export default {
   methods: {
     showActiveSicksPage() {
       this.$router.push({ path: '/diseases/table/choose'})
+    },
+
+    showChooseGraphicsPage() {
+      this.$router.push({ path: '/diseases/graphics/choose'})
     }
   }
 }

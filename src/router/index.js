@@ -14,6 +14,7 @@ import DiseaseApproveBySick from "@/pages/DiseaseApproveBySick";
 import DiseaseApproveByDecanat from "@/pages/DiseaseApproveByDecanat";
 import ChooseGraphics from "@/pages/ChooseGraphics";
 import ChooseDiseasesTable from "@/pages/ChooseDiseasesTable";
+import Graphics from "@/pages/Graphics";
 
 Vue.use(VueRouter)
 
@@ -32,6 +33,18 @@ const routes = [
     path: '/diseases/graphics/choose',
     name: 'chooseGraphics',
     component: ChooseGraphics,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: checkWatchStatisticPermission,
+  },
+  {
+    path: '/disease/graphics',
+    name: 'diseaseGraphics',
+    component: Graphics,
+    props: route => (
+        { graphicInfo: route.query.graphicInfo }
+    ),
     meta: {
       requiresAuth: true
     },

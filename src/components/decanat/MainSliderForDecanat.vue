@@ -11,7 +11,7 @@
 <!--    style="border: 6px solid #2196F3; "-->
 
     <v-carousel-item style="border: 6px solid #2196F3; ">
-      <CountDiseaseGraphic :series="countDiseaseGraphic.series" :options="countDiseaseGraphic.options"/>
+      <CountDiseaseGraphic :height="'80%'" :series="countDiseaseGraphic.series" :options="countDiseaseGraphic.options"/>
     </v-carousel-item>
 
     <v-carousel-item style="border: 6px solid #2196F3; ">
