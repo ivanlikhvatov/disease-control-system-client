@@ -15,6 +15,8 @@ export default new Vuex.Store({
     allDiseasesList: [],
 
     groupGraphicsInfo: {},
+    departmentGraphicsInfo: {},
+    institutesGraphicsInfo: {},
 
     serverError: {},
     serverResponse: {},
@@ -38,6 +40,8 @@ export default new Vuex.Store({
     allDiseasesList: state => state.allDiseasesList,
 
     groupGraphicsInfo: state => state.groupGraphicsInfo,
+    departmentGraphicsInfo: state => state.departmentGraphicsInfo,
+    institutesGraphicsInfo: state => state.institutesGraphicsInfo,
 
     isLoggedIn: state => !!state.token,
     isStudent: state => state.user.roles && state.user.roles.indexOf("STUDENT") !== -1,
@@ -144,6 +148,14 @@ export default new Vuex.Store({
 
     get_group_graphics_info_request(state, groupGraphicsInfo) {
       state.groupGraphicsInfo = groupGraphicsInfo
+    },
+
+    get_departments_graphics_info_request(state, departmentGraphicsInfo) {
+      state.departmentGraphicsInfo = departmentGraphicsInfo
+    },
+
+    get_institutes_graphics_info_request(state, institutesGraphicsInfo) {
+      state.institutesGraphicsInfo = institutesGraphicsInfo
     }
   },
 
@@ -388,9 +400,30 @@ export default new Vuex.Store({
       })
     },
 
+    getDepartmentGraphicData({commit}, data){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/graphics/byDepartments', data: data, method: 'POST' })
+            .then(resp => {
+              const departmentsGraphicsInfo = resp.data;
+              commit('get_departments_graphics_info_request', departmentsGraphicsInfo)
+              resolve(resp)
+            })
+      })
+    },
+
+    getInstituteGraphicData({commit}, data){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/graphics/byInstitutes', data: data, method: 'POST' })
+            .then(resp => {
+              const institutesGraphicsInfo = resp.data;
+              commit('get_institutes_graphics_info_request', institutesGraphicsInfo)
+              resolve(resp)
+            })
+      })
+    },
+
 
     logout({commit}){
-      //TODO послать запрос logout на сервер?
       return new Promise((resolve) => {
         commit('logout')
         localStorage.removeItem('token')

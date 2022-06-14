@@ -19,7 +19,7 @@
     </v-carousel-item>
 
     <v-carousel-item style="border: 6px solid #2196F3; ">
-      <CountDiseaseByDiseaseTypeDiagram :counts="countDiseaseByDiseaseTypeDiagramInfo.counts" :labels="countDiseaseByDiseaseTypeDiagramInfo.diseases"/>
+      <CountDiseaseByDiseaseTypeDiagram :chartName="'График заболеваемости по типам болезней в институте'" :counts="countDiseaseByDiseaseTypeDiagramInfo.counts" :labels="countDiseaseByDiseaseTypeDiagramInfo.diseases"/>
     </v-carousel-item>
 
   </v-carousel>
@@ -65,7 +65,7 @@ export default {
     },
 
     fillDataForCountDiseaseByDepartmentDiagram() {
-      let countAndDepartmentNameList = this.$store.getters.user.additionalInfo.decanatAdditionalInfo.departmentCountOfSicks
+      let countAndDepartmentNameList = this.$store.getters.user.additionalInfo.decanatAdditionalInfo.universityPartCountOfSicks
 
       let countList = []
       let departmentNameList = []

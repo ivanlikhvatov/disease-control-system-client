@@ -14,7 +14,11 @@ export default {
     labels: {
       type: Array,
       default: null
-    }
+    },
+    chartName: {
+      type: String,
+      default: ''
+    },
   },
 
   data: () => ({
@@ -29,7 +33,7 @@ export default {
       },
       title: {
         offsetY: 10,
-        text: 'График заболеваемости по типам болезней',
+        text: null,
       },
       labels: null,
       responsive: [{
@@ -50,6 +54,7 @@ export default {
     fillData() {
       this.series = this.counts
       this.options.labels = this.labels
+      this.options.title.text = this.chartName
     }
   },
 

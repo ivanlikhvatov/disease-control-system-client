@@ -176,7 +176,7 @@ export default {
     },
 
     mostCountOfSickDepartment() {
-      var diseasesByDepartments = this.$store.getters.user.additionalInfo.decanatAdditionalInfo.departmentCountOfSicks
+      var diseasesByDepartments = this.$store.getters.user.additionalInfo.decanatAdditionalInfo.universityPartCountOfSicks
 
       if (diseasesByDepartments.length === 0) {
         return null
