@@ -138,7 +138,7 @@
                     </v-list-item-title>
 
                     <div class="mb-4 text-h6">
-                      Болеет на кафедре {{mostCountOfSickDepartment.departmentName}}
+                      Болеет на кафедре {{mostCountOfSickDepartment.name}}
                     </div>
 
                   </v-list-item-content>

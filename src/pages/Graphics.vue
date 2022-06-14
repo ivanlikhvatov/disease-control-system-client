@@ -1,16 +1,40 @@
 <template>
   <v-container>
-<!--    {{groupGraphicsInfo.countOfDiseasesByDaysInGroup.dates}}-->
-<!--    {{groupGraphicsInfo.countOfDiseasesByDaysInGroup.countsOfSick}}-->
+    <div v-if="graphicInfo.graphicType === 'byGroups'">
 
+      <p style="text-align: center; color: #2196F3; font-size: xx-large; font-weight: bold">
+        Графики заболеваемости по группам
+      </p>
 
-    <CountDiseaseGraphic :height="'350'" :series="countDiseaseGraphic.series" :options="countDiseaseGraphic.options"/>
+      <p style="text-align: center; color: #2196F3; font-size: large; font-weight: bold">
+        Подробная информация по группе {{graphicInfo.group.name}}
+      </p>
+
+      <v-row>
+        <v-col>
+          <CountDiseaseByDepartmentDiagram :chartName="'Заболеваемость по группам'" :height="'350'" :counts="countDiseaseByGroupDiagramInfoInGroup.counts" :labels="countDiseaseByGroupDiagramInfoInGroup.groups"/>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <CountDiseaseGraphic :chartName="'График болеющих'" :counts="countsOfDiseaseGraphicInfoInGroup.counts" :labels="countsOfDiseaseGraphicInfoInGroup.dates"/>
+        </v-col>
+
+        <v-col>
+          <CountDiseaseByDiseaseTypeDiagram :counts="countsOfDiseasesByDiseaseDiagramInGroup.counts" :labels="countsOfDiseasesByDiseaseDiagramInGroup.diseases"/>
+        </v-col>
+      </v-row>
+    </div>
+
   </v-container>
 </template>
 
 <script>
 
 import CountDiseaseGraphic from "@/components/graphics/CountDiseaseGraphic";
+import CountDiseaseByDiseaseTypeDiagram from "@/components/graphics/CountDiseaseByDiseaseTypeDiagram";
+import CountDiseaseByDepartmentDiagram from "@/components/graphics/CountDiseaseByDepartmentDiagram";
 
 export default {
   props: ['graphicInfo'],
@@ -18,74 +42,18 @@ export default {
 
   components: {
     CountDiseaseGraphic,
+    CountDiseaseByDiseaseTypeDiagram,
+    CountDiseaseByDepartmentDiagram,
   },
 
   data: () => ({
-    countDiseaseGraphic: {
-      series: [{
-        name: "Болеющие",
-        data: null
-      }],
-      options: {
+    countsOfDiseaseGraphicInfoInGroup: null,
+    countsOfDiseasesByDiseaseDiagramInGroup: null,
+    countDiseaseByGroupDiagramInfoInGroup: null
 
-        // annotations: {
-        //   xaxis: [{
-        //     x: null,
-        //     strokeDashArray: 0,
-        //     borderColor: 'green',
-        //     label: {
-        //       borderColor: 'green',
-        //       style: {
-        //         color: '#fff',
-        //         background: 'green',
-        //       },
-        //     }
-        //   }],
-        // },
 
-        chart: {
-          height: 150,
-          type: 'line',
-          // background: 'white',
-          // borderColor: '#90A4AE',
-          zoom: {
-            enabled: false
-          }
-        },
 
-        colors: ['#F44336'],
 
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'straight'
-        },
-        title: {
-          offsetY: 10,
-          text: 'График болеющих в группе',
-          align: 'center',
-
-        },
-        grid: {
-          row: {
-            colors: ['#fff', '#f2f2f2']
-          }
-        },
-        xaxis: {
-          categories: null,
-        },
-        yaxis: [
-          {
-            labels: {
-              formatter: function(val) {
-                return val.toFixed(0);
-              }
-            }
-          }
-        ]
-      },
-    },
   }),
 
   computed: {
@@ -95,15 +63,56 @@ export default {
   },
 
   methods: {
-    fillDataForCountDiseaseGraphic() {
-      this.countDiseaseGraphic.series[0].data = this.$store.getters.groupGraphicsInfo.countOfDiseasesByDaysInGroup.countsOfSick
-      this.countDiseaseGraphic.options.xaxis.categories = this.$store.getters.groupGraphicsInfo.countOfDiseasesByDaysInGroup.dates
-      // this.countDiseaseGraphic.options.annotations.xaxis[0].x = this.$store.getters.user.additionalInfo.decanatAdditionalInfo.countOfDiseasesByDaysForTwoWeeks.dates[6]
+    fillDataForCountDiseaseGraphicInGroup() {
+      this.countsOfDiseaseGraphicInfoInGroup = {
+        counts: this.$store.getters.groupGraphicsInfo.countOfDiseasesByDaysInGroup.countsOfSick,
+        dates: this.$store.getters.groupGraphicsInfo.countOfDiseasesByDaysInGroup.dates
+      }
     },
+
+    fillDataForCountDiseaseDiagramByDiseaseInGroup() {
+
+      let countAndDiseaseNameList = this.$store.getters.groupGraphicsInfo.diseaseTypeCountOfSicksInGroup
+
+      let countList = []
+      let diseaseNameList = []
+
+      for (var i = 0; i < countAndDiseaseNameList.length; i++) {
+        countList.push(countAndDiseaseNameList[i].countOfSick)
+        diseaseNameList.push(countAndDiseaseNameList[i].diseaseName)
+      }
+      this.countsOfDiseasesByDiseaseDiagramInGroup = {
+        counts: countList,
+        diseases: diseaseNameList
+      }
+    },
+
+    fillDataForCountDiseasesInGroupsDiagramForGroup() {
+      let countAndGroupNameList = this.$store.getters.groupGraphicsInfo.groupsCountOfSicks
+
+      let countList = []
+      let groupNameList = []
+
+      for (var i = 0; i < countAndGroupNameList.length; i++) {
+        countList.push(countAndGroupNameList[i].countOfSick)
+        groupNameList.push(countAndGroupNameList[i].name)
+      }
+
+
+      this.countDiseaseByGroupDiagramInfoInGroup = {
+        counts: countList,
+        groups: groupNameList
+      }
+    }
   },
 
   created() {
-    this.fillDataForCountDiseaseGraphic()
+
+    if (this.graphicInfo.graphicType === 'byGroups') {
+      this.fillDataForCountDiseaseGraphicInGroup()
+      this.fillDataForCountDiseaseDiagramByDiseaseInGroup()
+      this.fillDataForCountDiseasesInGroupsDiagramForGroup()
+    }
   }
 }
 </script>
