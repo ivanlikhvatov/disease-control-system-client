@@ -9,7 +9,7 @@
         Активные заболевания
       </v-tab>
 
-      <v-tab>
+      <v-tab v-if="isDecanat">
         Ожидают подтверждения
       </v-tab>
 
@@ -29,7 +29,7 @@
         <disease-active-list></disease-active-list>
       </v-tab-item>
 
-      <v-tab-item>
+      <v-tab-item v-if="isDecanat">
         <disease-processed-list></disease-processed-list>
       </v-tab-item>
 
@@ -71,8 +71,18 @@ export default {
     AllDiseasesList
   },
 
+  computed: {
+    isAdmin: function () { return this.$store.getters.isAdmin},
+    isDecanat: function () { return this.$store.getters.isDecanat},
+    isCurator: function () { return this.$store.getters.isCurator},
+    isRectorat: function () { return this.$store.getters.isRectorat},
+    isCuratorSupervising: function () { return this.$store.getters.isCuratorSupervising},
+    isTeacher: function () { return this.$store.getters.isTeacher},
+    user: function () { return this.$store.getters.user},
+  },
+
   beforeMount() {
-    this.$store.dispatch('getAllDiseasesByDecanatList');
+    this.$store.dispatch('getAllDiseasesList');
   },
 
 }

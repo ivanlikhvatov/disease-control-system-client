@@ -17,6 +17,7 @@ export default new Vuex.Store({
     groupGraphicsInfo: {},
     departmentGraphicsInfo: {},
     institutesGraphicsInfo: {},
+    universityGraphicsInfo: {},
 
     serverError: {},
     serverResponse: {},
@@ -42,6 +43,7 @@ export default new Vuex.Store({
     groupGraphicsInfo: state => state.groupGraphicsInfo,
     departmentGraphicsInfo: state => state.departmentGraphicsInfo,
     institutesGraphicsInfo: state => state.institutesGraphicsInfo,
+    universityGraphicsInfo: state => state.universityGraphicsInfo,
 
     isLoggedIn: state => !!state.token,
     isStudent: state => state.user.roles && state.user.roles.indexOf("STUDENT") !== -1,
@@ -81,6 +83,10 @@ export default new Vuex.Store({
       state.processedDiseasesList = []
       state.activeDiseasesList = []
       state.allDiseasesList = []
+      state.groupGraphicsInfo = {}
+      state.departmentGraphicsInfo = {}
+      state.institutesGraphicsInfo = {}
+      state.universityGraphicsInfo = {}
     },
     clearServerError(state){
       state.serverError = {}
@@ -122,7 +128,7 @@ export default new Vuex.Store({
       }
     },
 
-    get_active_diseases_list_by_decanat_request(state, activeDiseasesList) {
+    get_active_diseases_list_request(state, activeDiseasesList) {
       state.activeDiseasesList = activeDiseasesList
 
       state.serverResponse = {
@@ -130,7 +136,7 @@ export default new Vuex.Store({
       }
     },
 
-    get_all_diseases_list_by_decanat_request(state, allDiseasesList) {
+    get_all_diseases_list_request(state, allDiseasesList) {
       state.allDiseasesList = allDiseasesList
 
       state.serverResponse = {
@@ -156,6 +162,10 @@ export default new Vuex.Store({
 
     get_institutes_graphics_info_request(state, institutesGraphicsInfo) {
       state.institutesGraphicsInfo = institutesGraphicsInfo
+    },
+
+    get_university_graphics_info_request(state, universityGraphicsInfo) {
+      state.universityGraphicsInfo = universityGraphicsInfo
     }
   },
 
@@ -343,23 +353,23 @@ export default new Vuex.Store({
       })
     },
 
-    getActiveDiseasesListByDecanat({commit}){
+    getActiveDiseasesList({commit}){
       return new Promise((resolve) => {
-        axios({url: 'http://localhost:9000/api/v1/decanat/diseases/active', method: 'GET' })
+        axios({url: 'http://localhost:9000/api/v1/tables/diseases/active', method: 'GET' })
             .then(resp => {
               const activeDiseasesList = resp.data;
-              commit('get_active_diseases_list_by_decanat_request', activeDiseasesList)
+              commit('get_active_diseases_list_request', activeDiseasesList)
               resolve(resp)
             })
       })
     },
 
-    getAllDiseasesByDecanatList({commit}){
+    getAllDiseasesList({commit}){
       return new Promise((resolve) => {
-        axios({url: 'http://localhost:9000/api/v1/decanat/diseases/all', method: 'GET' })
+        axios({url: 'http://localhost:9000/api/v1/tables/diseases/all', method: 'GET' })
             .then(resp => {
               const activeDiseasesList = resp.data;
-              commit('get_all_diseases_list_by_decanat_request', activeDiseasesList)
+              commit('get_all_diseases_list_request', activeDiseasesList)
               resolve(resp)
             })
       })
@@ -417,6 +427,17 @@ export default new Vuex.Store({
             .then(resp => {
               const institutesGraphicsInfo = resp.data;
               commit('get_institutes_graphics_info_request', institutesGraphicsInfo)
+              resolve(resp)
+            })
+      })
+    },
+
+    getUniversityGraphicData({commit}, data){
+      return new Promise((resolve) => {
+        axios({url: 'http://localhost:9000/api/v1/graphics/byUniversity', data: data, method: 'POST' })
+            .then(resp => {
+              const universityGraphicsInfo = resp.data;
+              commit('get_university_graphics_info_request', universityGraphicsInfo)
               resolve(resp)
             })
       })

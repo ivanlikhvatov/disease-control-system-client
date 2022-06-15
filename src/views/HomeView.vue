@@ -2,6 +2,7 @@
   <v-container>
     <decanat-main-panel v-if="isDecanat"></decanat-main-panel>
     <student-main-panel v-if="isStudent"></student-main-panel>
+    <rectorat-main-panel v-if="isRectorat"></rectorat-main-panel>
   </v-container>
 </template>
 
@@ -9,13 +10,15 @@
 
 import DecanatMainPanel from "@/components/decanat/DecanatMainPanel";
 import StudentMainPanel from "@/components/student/StudentMainPanel";
+import RectoratMainPanel from "@/components/rectorat/RectoratMainPanel";
 
 export default {
   name: "HomeViewView",
 
   components: {
     DecanatMainPanel,
-    StudentMainPanel
+    StudentMainPanel,
+    RectoratMainPanel
   },
 
   computed : {

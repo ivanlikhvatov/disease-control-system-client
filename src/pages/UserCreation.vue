@@ -244,7 +244,6 @@ export default {
     roleItems: [
         'Студент',
         'Куратор',
-        'Кафедрально ответственный',
         'Ректорат',
         'Деканат',
         'Учитель',
@@ -478,6 +477,17 @@ export default {
           gender: this.gender,
           roles: this.roles,
           institute: this.institute
+        }
+      }
+
+      if (this.roles.indexOf('Ректорат') !== -1) {
+        data = {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          patronymic: this.patronymic,
+          login: this.login,
+          gender: this.gender,
+          roles: this.roles,
         }
       }
 

@@ -18,11 +18,26 @@
         <v-list-item-group
             active-class="primary--text text--accent-4"
         >
+
+          <v-list-item
+              v-if="isRectorat"
+              @click.stop="isChooseDatesUniversityGraphicMenu = true"
+          >
+            По университету
+          </v-list-item>
+
           <v-list-item
               v-if="isDecanat"
               @click.stop="isChooseDatesInstituteGraphicMenu = true"
           >
             По институту
+          </v-list-item>
+
+          <v-list-item
+              v-if="isRectorat"
+              @click.stop="isChooseInstituteMenu = true"
+          >
+            По институтам
           </v-list-item>
 
           <v-list-item
@@ -43,12 +58,102 @@
       </v-list>
 
       <v-dialog
+          v-model="isChooseDatesUniversityGraphicMenu"
+          max-width="550"
+      >
+        <v-card>
+          <v-card-title>
+            Выберите даты
+          </v-card-title>
+
+          <v-divider></v-divider>
+          <v-card-text class="mt-5">
+            <v-menu
+                ref="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                    :error-messages="startDateErrors"
+                    required
+                    color="info"
+                    v-model="startDate"
+                    label="Начало"
+                    append-icon="event"
+                    outlined
+                    readonly
+                    @change="$v.startDate.$touch()"
+                    @blur="$v.startDate.$touch()"
+                    v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                  ref="picker"
+                  v-model="startDate"
+                  color="info"
+                  :max="dateNow"
+              ></v-date-picker>
+            </v-menu>
+
+            <v-menu
+                ref="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                    :error-messages="endDateErrors"
+                    required
+                    color="info"
+                    v-model="endDate"
+                    label="Конец"
+                    append-icon="event"
+                    outlined
+                    readonly
+                    @change="$v.endDate.$touch()"
+                    @blur="$v.endDate.$touch()"
+                    v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                  ref="picker"
+                  v-model="endDate"
+                  color="info"
+                  :max="dateNow"
+              ></v-date-picker>
+            </v-menu>
+
+
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                outlined
+                rounded
+                color="success"
+                @click="showUniversityGraphics"
+            >
+              Далее
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
           v-model="isChooseDatesInstituteGraphicMenu"
           max-width="550"
       >
         <v-card>
           <v-card-title>
-            Выберите группу и даты
+            Выберите даты
           </v-card-title>
 
           <v-divider></v-divider>
@@ -133,12 +238,116 @@
       </v-dialog>
 
       <v-dialog
+          v-model="isChooseInstituteMenu"
+          max-width="550"
+      >
+        <v-card>
+          <v-card-title>
+            Выберите институт и даты
+          </v-card-title>
+
+          <v-divider></v-divider>
+          <v-card-text class="mt-5">
+
+            <v-autocomplete
+                v-model="selectedInstitute"
+                :items="user.additionalInfo.universityInfo.institutes"
+                item-text="shortName"
+                dense
+                label="Выберите название института"
+                required
+                return-object
+                :error-messages="selectedInstituteErrors"
+                @change="$v.selectedInstitute.$touch()"
+                @blur="$v.selectedInstitute.$touch()"
+            ></v-autocomplete>
+
+            <v-menu
+                ref="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                    :error-messages="startDateErrors"
+                    required
+                    color="info"
+                    v-model="startDate"
+                    label="Начало"
+                    append-icon="event"
+                    outlined
+                    readonly
+                    @change="$v.startDate.$touch()"
+                    @blur="$v.startDate.$touch()"
+                    v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                  ref="picker"
+                  v-model="startDate"
+                  color="info"
+                  :max="dateNow"
+              ></v-date-picker>
+            </v-menu>
+
+            <v-menu
+                ref="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                    :error-messages="endDateErrors"
+                    required
+                    color="info"
+                    v-model="endDate"
+                    label="Конец"
+                    append-icon="event"
+                    outlined
+                    readonly
+                    @change="$v.endDate.$touch()"
+                    @blur="$v.endDate.$touch()"
+                    v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                  ref="picker"
+                  v-model="endDate"
+                  color="info"
+                  :max="dateNow"
+              ></v-date-picker>
+            </v-menu>
+
+
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                outlined
+                rounded
+                color="success"
+                @click="showInstitutesGraphics"
+            >
+              Далее
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
           v-model="isChooseDepartmentMenu"
           max-width="550"
       >
         <v-card>
           <v-card-title>
-            Выберите группу и даты
+            Выберите кафедру и даты
           </v-card-title>
 
           <v-divider></v-divider>
@@ -356,6 +565,7 @@ export default {
   validations: {
     selectedGroup: { required },
     selectedDepartment: {required},
+    selectedInstitute: {required},
 
     startDate: { required },
     endDate: { required }
@@ -365,12 +575,15 @@ export default {
 
     selectedGroup: {},
     selectedDepartment: {},
+    selectedInstitute: {},
     startDate: '',
     endDate: '',
 
     isChooseGroupMenu: false,
     isChooseDepartmentMenu: false,
     isChooseDatesInstituteGraphicMenu: false,
+    isChooseInstituteMenu: false,
+    isChooseDatesUniversityGraphicMenu: false
   }),
 
   computed : {
@@ -384,6 +597,14 @@ export default {
 
     dateNow() {
      return moment().format('YYYY-MM-DD');
+    },
+
+    selectedInstituteErrors() {
+      const errors = []
+
+      if (!this.$v.selectedInstitute.$dirty) return errors
+      !this.$v.selectedInstitute.required && errors.push('Данное поле обязательно')
+      return errors
     },
 
     selectedGroupErrors() {
@@ -428,7 +649,51 @@ export default {
 
   methods: {
 
+    showInstitutesGraphics() {
+      this.$v.$touch()
+
+      if (this.selectedInstituteErrors.length !== 0 || this.startDateErrors.length !== 0 || this.endDateErrors.length !== 0) {
+        return
+      }
+
+      let data = {
+        institute: this.selectedInstitute,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        graphicType: 'byInstitutes'
+      }
+
+      this.$store.dispatch('getInstituteGraphicData', data)
+          .then(() => this.$router.push({ path: '/disease/graphics', query: { graphicInfo: data}}))
+          .catch(err => console.log(err))
+    },
+
+    showUniversityGraphics() {
+      this.$v.$touch()
+
+      if (this.startDateErrors.length !== 0 || this.endDateErrors.length !== 0) {
+        return
+      }
+
+      let data = {
+        startDate: this.startDate,
+        endDate: this.endDate,
+        graphicType: 'byUniversity'
+      }
+
+      this.$store.dispatch('getUniversityGraphicData', data)
+          .then(() => this.$router.push({ path: '/disease/graphics', query: { graphicInfo: data}}))
+          .catch(err => console.log(err))
+    },
+
     showInstituteDecanatGraphics() {
+
+      this.$v.$touch()
+
+      if (this.startDateErrors.length !== 0 || this.endDateErrors.length !== 0) {
+        return
+      }
+
       let data = {
         institute: this.user.institute,
         startDate: this.startDate,

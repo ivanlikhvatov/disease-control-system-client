@@ -73,6 +73,47 @@
       <CountDiseaseByDiseaseTypeDiagram :chartName="'График заболеваемости по типам болезней в инстиуте'" :counts="countsOfDiseasesByDiseaseDiagramInfo.counts" :labels="countsOfDiseasesByDiseaseDiagramInfo.diseases"/>
     </div>
 
+    <div v-if="graphicInfo.graphicType === 'byInstitutes'">
+
+      <p style="text-align: center; color: #2196F3; font-size: xx-large; font-weight: bold">
+        Графики заболеваемости по институтам
+      </p>
+
+      <v-row>
+        <v-col>
+          <CountDiseaseByDepartmentDiagram :chartName="'Заболеваемость по институтам'" :height="'350'" :counts="countDiseaseByGroupDiagramInfo.counts" :labels="countDiseaseByGroupDiagramInfo.groups"/>
+        </v-col>
+      </v-row>
+
+      <p style="text-align: center; color: #2196F3; font-size: large; font-weight: bold">
+        Подробная информация по институту {{graphicInfo.institute.shortName}}
+      </p>
+
+      <v-row>
+        <v-col>
+          <CountDiseaseGraphic :chartName="'График количества болеющих по институту'" :counts="countsOfDiseaseGraphicInfo.counts" :labels="countsOfDiseaseGraphicInfo.dates"/>
+        </v-col>
+
+        <v-col>
+          <CountDiseaseByDiseaseTypeDiagram :chartName="'График заболеваемости по типам болезней по институтам'" :counts="countsOfDiseasesByDiseaseDiagramInfo.counts" :labels="countsOfDiseasesByDiseaseDiagramInfo.diseases"/>
+        </v-col>
+      </v-row>
+    </div>
+
+    <div v-if="graphicInfo.graphicType === 'byUniversity'">
+      <p style="text-align: center; color: #2196F3; font-size: xx-large; font-weight: bold">
+        Графики заболеваемости по университету
+      </p>
+
+      <v-row class="mb-6">
+        <v-col>
+          <CountDiseaseGraphic :height="'350'" :chartName="'График количества болеющих по университету'" :counts="countsOfDiseaseGraphicInfo.counts" :labels="countsOfDiseaseGraphicInfo.dates"/>
+        </v-col>
+      </v-row>
+
+      <CountDiseaseByDiseaseTypeDiagram :chartName="'График заболеваемости по типам болезней в университете'" :counts="countsOfDiseasesByDiseaseDiagramInfo.counts" :labels="countsOfDiseasesByDiseaseDiagramInfo.diseases"/>
+    </div>
+
   </v-container>
 </template>
 
@@ -109,6 +150,10 @@ export default {
 
     instituteGraphicsInfo() {
       return this.$store.getters.institutesGraphicsInfo
+    },
+
+    universityGraphicsInfo() {
+      return this.$store.getters.universityGraphicsInfo
     }
   },
 
@@ -173,6 +218,17 @@ export default {
     if (this.graphicInfo.graphicType === 'byInstituteByDecanat') {
       this.fillDataForCountDiseaseGraphic(this.instituteGraphicsInfo)
       this.fillDataForCountDiseaseDiagramByDisease(this.instituteGraphicsInfo)
+    }
+
+    if (this.graphicInfo.graphicType === 'byInstitutes') {
+      this.fillDataForCountDiseaseGraphic(this.instituteGraphicsInfo)
+      this.fillDataForCountDiseaseDiagramByDisease(this.instituteGraphicsInfo)
+      this.fillDataForCountDiseasesUniversityPartDiagram(this.instituteGraphicsInfo)
+    }
+
+    if (this.graphicInfo.graphicType === 'byUniversity') {
+      this.fillDataForCountDiseaseGraphic(this.universityGraphicsInfo)
+      this.fillDataForCountDiseaseDiagramByDisease(this.universityGraphicsInfo)
     }
   }
 }

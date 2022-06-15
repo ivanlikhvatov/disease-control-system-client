@@ -64,6 +64,13 @@
               </v-list-item-content>
             </v-list-item>
 
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>{{detailedInfo.user.group.directionProfile.instituteDirection.institute.shortName}}</v-list-item-title>
+                <v-list-item-subtitle>Институт</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
             <v-list-item v-if="detailedInfo.disease">
               <v-list-item-content>
                 <v-list-item-title>{{detailedInfo.disease.name}}</v-list-item-title>
@@ -194,11 +201,11 @@ export default {
       },
       { text: 'Фамилия', value: 'user.lastname' },
       { text: 'Имя', value: 'user.firstname' },
-      { text: 'Отчество', value: 'user.patronymic' },
       { text: 'Телефон', value: 'user.phoneNumber' },
       { text: 'Группа', value: 'user.group.name' },
       { text: 'Направление', value: 'user.group.directionProfile.instituteDirection.shortName'},
       { text: 'Кафедра', value: 'user.group.directionProfile.instituteDirection.department.shortName'},
+      { text: 'Институт', value: 'user.group.directionProfile.instituteDirection.institute.shortName'},
       { text: 'Дата заболевания', value: 'dateOfDisease' },
       { text: 'Диагноз', value: 'disease.name'},
 
@@ -269,7 +276,7 @@ export default {
   },
 
   beforeMount() {
-    this.$store.dispatch('getActiveDiseasesListByDecanat');
+    this.$store.dispatch('getActiveDiseasesList');
   },
 }
 </script>
