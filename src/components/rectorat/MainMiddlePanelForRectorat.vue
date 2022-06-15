@@ -34,7 +34,7 @@
                     </v-list-item-title>
 
                     <div class="mb-4 text-h6">
-                      Болеет во всем институте
+                      Болеет во всем университете
                     </div>
                   </v-list-item-content>
                 </v-list-item>
@@ -138,7 +138,7 @@
                     </v-list-item-title>
 
                     <div class="mb-4 text-h6">
-                      Болеет в университете {{mostCountOfSickInstitute.name}}
+                      Болеет в институте {{mostCountOfSickInstitute.name}}
                     </div>
 
                   </v-list-item-content>

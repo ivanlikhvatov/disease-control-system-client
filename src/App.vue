@@ -264,9 +264,9 @@
         this.$store.dispatch('getProcessedDiseasesList');
       }
 
-      if (this.isStudent) {
-        this.$store.dispatch('getActiveUserDisease');
-      }
+      // if (this.isStudent) {
+      //   this.$store.dispatch('getActiveUserDisease');
+      // }
     }
   }
 </script>

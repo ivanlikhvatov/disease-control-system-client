@@ -1,9 +1,8 @@
 <template>
   <v-container>
     <v-carousel
-        cycle
         hide-delimiters
-        show-arrows-on-hover
+        :show-arrows="false"
     >
       <v-carousel-item
 
@@ -31,6 +30,7 @@
         </v-sheet>
       </v-carousel-item>
     </v-carousel>
+
   </v-container>
 </template>
 
@@ -42,6 +42,16 @@ export default {
     diseaseInfo() {
       return this.$store.getters.activeUserDiseaseInfo
     },
+
+    isStudent() {
+      return this.$store.getters.isStudent
+    }
+  },
+
+  beforeMount() {
+    if (this.isStudent) {
+      this.$store.dispatch('getActiveUserDisease');
+    }
   }
 }
 </script>
