@@ -3,6 +3,7 @@
     <decanat-main-panel v-if="isDecanat"></decanat-main-panel>
     <student-main-panel v-if="isStudent"></student-main-panel>
     <rectorat-main-panel v-if="isRectorat"></rectorat-main-panel>
+    <curator-and-teacher-main-panel v-if="isCurator || isTeacher"></curator-and-teacher-main-panel>
   </v-container>
 </template>
 
@@ -11,6 +12,7 @@
 import DecanatMainPanel from "@/components/decanat/DecanatMainPanel";
 import StudentMainPanel from "@/components/student/StudentMainPanel";
 import RectoratMainPanel from "@/components/rectorat/RectoratMainPanel";
+import CuratorAndTeacherMainPanel from "@/components/curatorAndteacher/CuratorAndTeacherMainPanel";
 
 export default {
   name: "HomeViewView",
@@ -18,7 +20,8 @@ export default {
   components: {
     DecanatMainPanel,
     StudentMainPanel,
-    RectoratMainPanel
+    RectoratMainPanel,
+    CuratorAndTeacherMainPanel
   },
 
   computed : {

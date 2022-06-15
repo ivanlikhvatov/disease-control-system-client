@@ -30,11 +30,11 @@
                 <v-list-item three-line>
                   <v-list-item-content>
                     <v-list-item-title class="text-h2 font-weight-bold mb-1">
-                      {{user.additionalInfo.rectoratAdditionalInfo.countOfSickNow}}
+                      {{user.additionalInfo.curatorAndTeacherAdditionalInfo.countOfSickNow}}
                     </v-list-item-title>
 
                     <div class="mb-4 text-h6">
-                      Болеет во всем институте
+                      Болеет во всех группах
                     </div>
                   </v-list-item-content>
                 </v-list-item>
@@ -82,7 +82,7 @@
                   <v-list-item-content>
 
                     <v-list-item-title class="text-h2 font-weight-bold mb-1">
-                      {{user.additionalInfo.rectoratAdditionalInfo.countOfSickToday}} / {{user.additionalInfo.rectoratAdditionalInfo.countOfRecoverToday}}
+                      {{user.additionalInfo.curatorAndTeacherAdditionalInfo.countOfSickToday}} / {{user.additionalInfo.curatorAndTeacherAdditionalInfo.countOfRecoverToday}}
                     </v-list-item-title>
                     <div class="mb-4 text-h6">
                       Заболело / Выздоровело
@@ -134,11 +134,11 @@
                   <v-list-item-content>
 
                     <v-list-item-title class="text-h2 font-weight-bold mb-1">
-                      {{mostCountOfSickInstitute.countOfSick}}
+                      {{mostCountOfSickDepartment.countOfSick}}
                     </v-list-item-title>
 
                     <div class="mb-4 text-h6">
-                      Болеет в университете {{mostCountOfSickInstitute.name}}
+                      Болеет в группе
                     </div>
 
                   </v-list-item-content>
@@ -168,30 +168,30 @@
 
 <script>
 export default {
-  name: "MainMiddlePanelForRectoratView",
+  name: "MainMiddlePanelForCuratorAndTeacher",
 
   computed: {
     user() {
       return this.$store.getters.user
     },
 
-    mostCountOfSickInstitute() {
-      var diseasesByDepartments = this.$store.getters.user.additionalInfo.rectoratAdditionalInfo.universityPartCountOfSicks
+    mostCountOfSickDepartment() {
+      var diseasesByDepartments = this.$store.getters.user.additionalInfo.curatorAndTeacherAdditionalInfo.universityPartCountOfSicks
 
       if (diseasesByDepartments.length === 0) {
         return null
       }
 
-      var mostCountOfSickInstitute = diseasesByDepartments[0];
+      var mostCountOfSickDepartment = diseasesByDepartments[0];
 
       for (var i = 0; i < diseasesByDepartments.length; i++) {
 
-        if (diseasesByDepartments[i].countOfSick > mostCountOfSickInstitute.countOfSick) {
-          mostCountOfSickInstitute = diseasesByDepartments[i]
+        if (diseasesByDepartments[i].countOfSick > mostCountOfSickDepartment.countOfSick) {
+          mostCountOfSickDepartment = diseasesByDepartments[i]
         }
       }
 
-      return mostCountOfSickInstitute
+      return mostCountOfSickDepartment
     }
   },
 

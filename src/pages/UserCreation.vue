@@ -65,7 +65,7 @@
               hint="Выберите роли, которые хотите предоставить пользователю"
               persistent-hint
               required
-              @change="[$v.roles.$touch(), setInstituteItems()]"
+              @change="[$v.roles.$touch(), setInstituteItems(), setInterestedGroupsItems()]"
               @blur="$v.roles.$touch()"
           ></v-select>
 
@@ -173,6 +173,25 @@
             </v-select>
           </div>
 
+          <div
+              v-if="roles.indexOf('Куратор') !== -1 || roles.indexOf('Преподаватель')"
+          >
+            <v-select
+                name="interestedGroups"
+                v-model="interestedGroup"
+                :items="interestedGroupsItems"
+                multiple
+                item-text="name"
+                :error-messages="interestedGroupErrors"
+                label="Выберите группы"
+                required
+                return-object
+                @change="$v.interestedGroup.$touch()"
+                @blur="$v.interestedGroup.$touch()"
+            >
+            </v-select>
+          </div>
+
           <p
               style="color: red"
               v-if="serverError"
@@ -221,7 +240,8 @@ export default {
     institute: { required },
     direction: { required },
     profile: { required },
-    group: { required }
+    group: { required },
+    interestedGroup: { required }
   },
 
   data: () => ({
@@ -236,6 +256,7 @@ export default {
     direction: {},
     profile: {},
     group: {},
+    interestedGroup: [],
 
     genderItems: [
       'муж',
@@ -246,7 +267,7 @@ export default {
         'Куратор',
         'Ректорат',
         'Деканат',
-        'Учитель',
+        'Преподаватель',
         'Администратор'
     ],
   }),
@@ -312,6 +333,17 @@ export default {
       !this.$v.group.required && errors.push('Данное поле обязательно')
       return errors
     },
+    interestedGroupErrors() {
+      const errors = []
+
+      if (this.roles.indexOf('Преподаватель') === -1 && this.roles.indexOf('Куратор') === -1){
+        return errors
+      }
+
+      if (!this.$v.interestedGroup.$dirty) return errors
+      !this.$v.interestedGroup.required && errors.push('Данное поле обязательно')
+      return errors
+    },
     firstnameErrors () {
       const errors = []
       if (!this.$v.firstname.$dirty) return errors
@@ -361,6 +393,9 @@ export default {
     instituteItems () {
       return this.$store.getters.allInstitutes;
     },
+    interestedGroupsItems () {
+      return this.$store.getters.interestedGroups;
+    },
     directionItems() {
       return this.$store.getters.directionsBySelectedInstitute
     },
@@ -386,6 +421,7 @@ export default {
       this.direction = {}
       this.profile = {}
       this.group = {}
+      this.interestedGroup = []
     },
 
     setInstituteItems () {
@@ -396,6 +432,14 @@ export default {
         this.direction = {};
         this.profile = {};
         this.group = {};
+      }
+    },
+
+    setInterestedGroupsItems() {
+      if (this.roles.indexOf('Куратор') !== -1 || this.roles.indexOf('Преподаватель') !== -1) {
+        this.$store.dispatch('getAllInterestedGroups')
+      }else {
+        this.interestedGroup = [];
       }
     },
 
@@ -442,6 +486,7 @@ export default {
           && this.institutesErrors.length === 0
           && this.directionErrors.length === 0
           && this.profileErrors.length === 0
+          && this.interestedGroupErrors.length === 0
           && this.groupErrors.length === 0;
     },
 
@@ -488,6 +533,25 @@ export default {
           login: this.login,
           gender: this.gender,
           roles: this.roles,
+        }
+      }
+
+      if (this.roles.indexOf('Куратор') !== -1 || this.roles.indexOf('Преподаватель')) {
+
+        let interestedGroupsIdList = [];
+
+        for (var i = 0; i < this.interestedGroup.length; i++) {
+            interestedGroupsIdList.push(this.interestedGroup[i].id);
+        }
+
+        data = {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          patronymic: this.patronymic,
+          login: this.login,
+          gender: this.gender,
+          roles: this.roles,
+          interestedGroupsIdList: interestedGroupsIdList
         }
       }
 
