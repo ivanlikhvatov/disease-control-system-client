@@ -138,7 +138,7 @@
                     </v-list-item-title>
 
                     <div class="mb-4 text-h6">
-                      Болеет в группе
+                      Болеет в группе {{mostCountOfSickDepartment.name}}
                     </div>
 
                   </v-list-item-content>

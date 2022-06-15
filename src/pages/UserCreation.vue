@@ -174,7 +174,7 @@
           </div>
 
           <div
-              v-if="roles.indexOf('Куратор') !== -1 || roles.indexOf('Преподаватель')"
+              v-if="roles.indexOf('Куратор') !== -1 || roles.indexOf('Преподаватель') !== -1"
           >
             <v-select
                 name="interestedGroups"
@@ -536,7 +536,7 @@ export default {
         }
       }
 
-      if (this.roles.indexOf('Куратор') !== -1 || this.roles.indexOf('Преподаватель')) {
+      if (this.roles.indexOf('Куратор') !== -1 || this.roles.indexOf('Преподаватель') !== -1) {
 
         let interestedGroupsIdList = [];
 
