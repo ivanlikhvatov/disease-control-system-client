@@ -39,7 +39,7 @@
                 ref="picker"
                 v-model="dateOfRecovery"
                 color="info"
-                :max="new Date().toISOString().substr(0, 10)"
+                :max="dateNow"
                 :min="dateOfDisease"
             ></v-date-picker>
           </v-menu>
@@ -108,6 +108,7 @@
 <script>
 import {maxLength, required} from "vuelidate/lib/validators";
 import {validationMixin} from "vuelidate";
+import moment from "moment";
 
 export default {
   name: "DiseaseApproveBySickView",
@@ -136,6 +137,10 @@ export default {
       if (!this.$v.dateOfRecovery.$dirty) return errors
       !this.$v.dateOfRecovery.required && errors.push('Данное поле обязательно')
       return errors
+    },
+
+    dateNow() {
+      return moment().format('YYYY-MM-DD')
     },
 
     electronicSickIdErrors () {
